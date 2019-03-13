@@ -54,8 +54,8 @@ def determine_apache_distribution(treatmentgroup, controlgroup):
     
 def get_matched_groups(treat_um, control_um, seed=None):
     # allow reproducibility by fixing seed
-    if seed:
-        rng = np.random.RandomState(seed=seed)
+    # if no seed is input, this is randomly generated
+    rng = np.random.RandomState(seed=seed)
     
     # Create an empty dataframe variables. 
     df_treatment = pd.DataFrame()
