@@ -11,6 +11,14 @@ SELECT
       WHEN drugstopoffset < drugstartoffset THEN drugstartoffset
   END AS drugstopoffset,
   drugorderoffset,
+  CASE
+    WHEN
+      (drughiclseqno = 1820 OR lower(drugname) like '%aspirin%' OR lower(drugname) like '%ecotrin%')
+        THEN 'aspirin'
+    WHEN
+      (drughiclseqno = 3723 OR lower(drugname) like '%ibuprofen%' OR lower(drugname) like '%motrin%')
+        THEN 'ibuprofen'
+  ELSE NULL END AS drug,
   m.frequency,
   map.classification,
   dosage
