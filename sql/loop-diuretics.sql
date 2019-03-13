@@ -14,10 +14,10 @@ SELECT
   CASE
     WHEN
       (drughiclseqno = 3660 OR lower(drugname) like '%lasix%' OR lower(drugname) like '%furosemide%')
-        THEN 'aspirin'
+        THEN 'lasix'
     WHEN
       (drughiclseqno = 3664 OR lower(drugname) like '%bumex%' OR lower(drugname) like '%bumetanide%')
-        THEN 'ibuprofen'
+        THEN 'bumex'
   ELSE NULL END AS drug,
   m.frequency,
   map.classification,
