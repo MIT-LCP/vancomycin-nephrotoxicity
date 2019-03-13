@@ -7,37 +7,35 @@ import pandas as pd
 
       
 def extract_adm_and_wk(d, drugname='vanco'):
-    # define abx on admission as any administration [-12, 12]
-    idxKeep0 = (d['drugstartoffset'] >= (-12*60)) & (d['drugstartoffset'] <= (12*60)) 
-    idxKeep1 = (d['drugstopoffset'] >= (-12*60)) & (d['drugstopoffset'] <= (12*60))
-    d_on_adm = set(d.loc[idxKeep0 | idxKeep1, 'patientunitstayid'].values)
-
-    # define "persistent" abx use using rules to try and capture continued administration
-
-    # group 1: had an order on admission, and had another one >48hr after admission
-    idxKeep0 = (d['drugstartoffset'] >= (48*60)) & (d['drugstartoffset'] <= (168*60))
-    idxKeep1 = (d['drugstopoffset'] >= (48*60)) & (d['drugstopoffset'] <= (168*60))
-    d_48hr = set(d.loc[idxKeep0 | idxKeep1, 'patientunitstayid'].values)
-    d_48hr = d_on_adm.intersection(d_48hr)
-
-    # group 2: had an order on admission that persisted after 48 hours
-    # implicitly this is catching the group who had an adm longer than 7 days
-    # as those with orders >48 hr are also in group 1
-    idxKeep0 = (d['drugstartoffset'] >= (-12*60)) & (d['drugstartoffset'] <= (12*60)) 
-    idxKeep1 = (d['drugstopoffset'] >= (48*60))
-    d_long_order = set(d.loc[idxKeep0 | idxKeep1, 'patientunitstayid'].values)
-
     # create a dataframe with (1) abx on adm and (2) abx after 48 hr
     d_df = d[['patientunitstayid']].copy().drop_duplicates()
     d_df.set_index('patientunitstayid', inplace=True)
     d_df[drugname + '_adm'] = 0
     d_df[drugname + '_wk'] = 0
 
-    d_df.loc[d_on_adm, drugname + '_adm'] = 1
-    d_df.loc[d_48hr, drugname + '_wk'] = 1
-    d_df.loc[d_long_order, drugname + '_wk'] = 1
+    # define abx on admission as any administration [-12, 12]
+    idxKeep0 = (d['drugstartoffset'] >= (-12*60)) & (d['drugstartoffset'] <= (12*60)) 
+    idxKeep1 = (d['drugstopoffset'] >= (-12*60)) & (d['drugstopoffset'] <= (12*60))
+    d_on_adm = set(d.loc[idxKeep0 | idxKeep1, 'patientunitstayid'].values)
 
-    N = ((d_df[drugname + '_adm'] == 1) & (d_df[drugname + '_wk'] == 0)).sum()
+    d_df.loc[d_on_adm, drugname + '_adm'] = 1
+
+    # define "persistent" abx use using rules to try and capture continued administration
+
+    # group 1: had an order which started or ended sometime between hours [48, 168]
+    idxKeep0 = (d['drugstartoffset'] >= (48*60)) & (d['drugstartoffset'] <= (168*60))
+    idxKeep1 = (d['drugstopoffset'] >= (48*60)) & (d['drugstopoffset'] <= (168*60))
+    d_48hr = set(d.loc[idxKeep0 | idxKeep1, 'patientunitstayid'].values)
+    d_df.loc[d_48hr, drugname + '_wk'] = 1
+
+    # group 2: had an order on admission that persisted after 48 hours
+    # implicitly this is catching the group who had an order longer than 7 days
+    # as those with orders < 7 days (168 hr) were caught in previous dataframe
+    idxKeep0 = (d['drugstartoffset'] >= (-12*60)) & (d['drugstartoffset'] <= (12*60)) 
+    idxKeep1 = (d['drugstopoffset'] >= (48*60))
+    d_long_order = set(d.loc[idxKeep0 & idxKeep1, 'patientunitstayid'].values)
+
+    d_df.loc[d_long_order, drugname + '_wk'] = 1
     
     return d_df
 
