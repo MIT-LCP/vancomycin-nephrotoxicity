@@ -2,6 +2,7 @@
 import random
 import math
 
+import numpy as np
 import pandas as pd
 
       
@@ -53,9 +54,10 @@ def determine_apache_distribution(treatmentgroup, controlgroup):
     meandiff = controlgroup['apachescore'].mean() - treatmentgroup['apachescore'].mean()
     print(f'\nAbsolute Mean Difference of APACHE Score: {meandiff}')
     
-def get_matched_groups(treat_um, control_um, seed=830278):
-    # ensure reproducibility by fixing seed
-    random.seed(seed)
+def get_matched_groups(treat_um, control_um, seed=None):
+    # allow reproducibility by fixing seed
+    if seed:
+        rng = np.random.RandomState(seed=seed)
     
     # Create an empty dataframe variables. 
     df_treatment = pd.DataFrame()
@@ -69,11 +71,11 @@ def get_matched_groups(treat_um, control_um, seed=830278):
         sample_num = len(treat_group) if len(treat_group) < len(control_group) else len(control_group)
 
         if sample_num > 0:
-            treat_sample = treat_group.sample( n=sample_num )
-            df_treatment = df_treatment.append(treat_sample)
+            idx_sample = rng.permutation(sample_num)
+            df_treatment = df_treatment.append(treat_group.iloc[idx_sample, :])
 
-            control_sample = control_group.sample( n=sample_num )
-            df_control = df_control.append(control_sample)
+            idx_sample = rng.permutation(sample_num)
+            df_control =  df_control.append(control_group.iloc[idx_sample, :])
 
     print(f'Shape of treatment group: {df_treatment.shape}')  
     print(f'Shape of control group: {df_control.shape}')
@@ -95,7 +97,7 @@ def get_odds_ratio(a, b, c, d):
 
 
 # helper function to print odds ratio after matching
-def match_and_print_or(exposure, control):
+def match_and_print_or(exposure, control, seed=None):
     N = control.shape[0]
     print(f'{N} in control group.')
 
@@ -108,7 +110,7 @@ def match_and_print_or(exposure, control):
 
     # Match groups by APACHE group
     print('\n=== Match groups on APACHE ===\n')
-    exposure_m, control_m = get_matched_groups(exposure, control)
+    exposure_m, control_m = get_matched_groups(exposure, control, seed=seed)
     determine_apache_distribution(exposure_m, control_m)
 
 
