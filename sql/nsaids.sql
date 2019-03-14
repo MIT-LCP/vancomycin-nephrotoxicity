@@ -18,6 +18,9 @@ SELECT
     WHEN
       (drughiclseqno = 3723 OR lower(drugname) like '%ibuprofen%' OR lower(drugname) like '%motrin%')
         THEN 'ibuprofen'
+    WHEN
+      (drughiclseqno = 5175 OR lower(drugname) like '%toradol%' OR lower(drugname) like '%ketorolac%')
+        THEN 'toradol'
   ELSE NULL END AS drug,
   m.frequency,
   map.classification,
@@ -31,6 +34,9 @@ WHERE
 OR
   -- ibuprofen
   (drughiclseqno = 3723 OR lower(drugname) like '%ibuprofen%' OR lower(drugname) like '%motrin%')
+OR
+  -- toradol
+  (drughiclseqno = 5175 OR lower(drugname) like '%toradol%' OR lower(drugname) like '%ketorolac%')
 AND drugordercancelled = 'No'
 AND prn = 'No'
 ORDER BY patientunitstayid, drugstartoffset;
