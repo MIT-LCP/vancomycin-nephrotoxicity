@@ -31,4 +31,5 @@ OR
   (drughiclseqno = 3664 OR lower(drugname) like '%bumex%' OR lower(drugname) like '%bumetanide%')
 AND drugordercancelled = 'No'
 AND prn = 'No'
+AND map.classification NOT IN ('prn')
 ORDER BY patientunitstayid, drugstartoffset;

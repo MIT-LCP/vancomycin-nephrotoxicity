@@ -35,6 +35,6 @@ AND drugordercancelled = 'No'
 AND prn = 'No'
 AND map.classification NOT IN
 (
-  'TPN', 'dialysis', 'prophylactic'
+  'TPN', 'dialysis', 'prophylactic', 'prn'
 )
 ORDER BY patientunitstayid, drugstartoffset;

@@ -39,4 +39,5 @@ OR
   (drughiclseqno = 5175 OR lower(drugname) like '%toradol%' OR lower(drugname) like '%ketorolac%')
 AND drugordercancelled = 'No'
 AND prn = 'No'
+AND map.classification NOT IN ('prn')
 ORDER BY patientunitstayid, drugstartoffset;
