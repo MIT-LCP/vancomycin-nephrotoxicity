@@ -3,6 +3,12 @@
 --  pivoted_creatinine
 -- assumes this is available on the "public" schema
 
+
+-- decide which dataset to run queries on
+--  eicu_crd - publicly available dataset
+--  eicu_full_phi - internal larger dataset
+SET SEARCH_PATH TO eicu_full_phi;
+
 -- prepare vanco schema
 DROP SCHEMA IF EXISTS vanco;
 CREATE SCHEMA vanco;

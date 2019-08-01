@@ -72,7 +72,7 @@ WITH dx AS
             'surgery|infections|wound infection|traumatic wound'
         ) THEN 1 ELSE 0
     END) AS isst
-  from eicu_crd.diagnosis dx
+  from diagnosis dx
   left join vanco.dx_sepsis_infection dxlist
     on dx.diagnosisstring = dxlist.dx
   where diagnosisoffset >= -60 and diagnosisoffset < 60*24
@@ -149,7 +149,7 @@ WITH dx AS
         ,'S-CELLINFX' -- APACHE Disease: S-P/ISCHEM.   Description:  Cellulitis and localized soft tissue infections, surgery for
         ,'SEPSISCUT' -- APACHE Disease: SEPSISCUT.   Description:  Sepsis, cutaneous/soft tissue
         ) THEN 1 ELSE 0 END) AS isst
-  from eicu_crd.apachepredvar apv
+  from apachepredvar apv
   group by apv.patientunitstayid
 )
 SELECT
@@ -158,7 +158,7 @@ SELECT
   , COALESCE(GREATEST(dx.infection, dx.infection), 0) AS infection
   , COALESCE(GREATEST(dx.organfailure, dx.organfailure), 0) AS organfailure
   , COALESCE(GREATEST(dx.isst, dx.isst), 0) AS infection_skin_soft_tissue
-FROM eicu_crd.patient pt
+FROM patient pt
 LEFT JOIN dx
   ON pt.patientunitstayid = dx.patientunitstayid
 LEFT JOIN admit_dx adx

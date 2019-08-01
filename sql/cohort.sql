@@ -9,18 +9,18 @@ valid_stay AS
     SELECT patientunitstayid, hospitalid
     , CASE WHEN unitdischargeoffset >= 60 THEN 0 ELSE 1 END AS exclude_short_stay
     , CASE WHEN unitstaytype = 'stepdown/other' THEN 1 ELSE 0 END AS exclude_sdu
-    FROM eicu_crd.patient
+    FROM patient
 )
 -- figure out which hospitals have at least 80% of patients with a prescription in medication
 , med_tb AS (
     SELECT DISTINCT patientunitstayid
-    FROM eicu_crd.medication
+    FROM medication
 )
 , pat_tb AS (
   SELECT pt.hospitalid
     , CAST(count(DISTINCT m.patientunitstayid) AS NUMERIC) as count_med
     , CAST(count(DISTINCT pt.patientunitstayid) AS NUMERIC) as count_all
-  FROM eicu_crd.patient pt
+  FROM patient pt
   LEFT JOIN med_tb m 
     ON pt.patientunitstayid = m.patientunitstayid
   GROUP BY pt.hospitalid
@@ -42,7 +42,7 @@ valid_stay AS
         END AS age
       , hospitaladmitoffset
       , hospitaldischargeyear
-    FROM eicu_crd.patient pt
+    FROM patient pt
     WHERE pt.unitAdmitSource IN
     (
         
@@ -91,7 +91,7 @@ SELECT
   , CASE WHEN dt.dialysis = 1 THEN 1 ELSE 0 END AS exclude_dialysis_first_week
   , CASE WHEN cr0.patientunitstayid IS NULL THEN 1 ELSE 0 END AS exclude_cr_missing_baseline
   , CASE WHEN cr7.patientunitstayid IS NULL THEN 1 ELSE 0 END AS exclude_cr_missing_followup
-FROM eicu_crd.patient pt
+FROM patient pt
 LEFT JOIN vanco.dialysis dt
   ON pt.patientunitstayid = dt.patientunitstayid
 LEFT JOIN valid_stay vs

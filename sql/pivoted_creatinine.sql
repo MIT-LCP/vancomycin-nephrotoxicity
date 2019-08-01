@@ -8,7 +8,7 @@ with vw0 as
     , labname
     , labresultoffset
     , labresultrevisedoffset
-  from eicu_crd.lab
+  from lab
   where labname = 'creatinine'
   group by patientunitstayid, labname, labresultoffset, labresultrevisedoffset
   having count(distinct labresult)<=1
@@ -27,7 +27,7 @@ with vw0 as
           PARTITION BY lab.patientunitstayid, lab.labname, lab.labresultoffset
           ORDER BY lab.labresultrevisedoffset DESC
         ) as rn
-  from eicu_crd.lab
+  from lab
   inner join vw0
     ON  lab.patientunitstayid = vw0.patientunitstayid
     AND lab.labname = vw0.labname

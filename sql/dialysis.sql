@@ -5,7 +5,7 @@ with tr as
     -- captures 7,985 stays
     SELECT 
       patientunitstayid, treatmentoffset as chartoffset
-    FROM eicu_crd.treatment t
+    FROM treatment t
     WHERE lower(treatmentstring) like '%dialysis%'
     OR lower(treatmentstring) like '%rrt%'
     OR lower(treatmentstring) like '%ihd%'
@@ -15,7 +15,7 @@ with tr as
     -- captures 14,330 stays
     SELECT
       patientunitstayid, cplitemoffset as chartoffset
-    FROM eicu_crd.careplangeneral c
+    FROM careplangeneral c
     WHERE c.cplgroup = 'Volume Status'
     AND c.cplitemvalue in (
           'Hypervolemic - actively diurese' -- 2987
@@ -28,7 +28,7 @@ with tr as
     -- captures 7767 stays
     SELECT
       patientunitstayid, pasthistoryoffset as chartoffset
-    FROM eicu_crd.pasthistory
+    FROM pasthistory
     -- it's not obvious how to escape ()s in bigquery strings
     -- so we use a wildcard, %, for the '(R)' in the string
     -- note using the SQL clause `IN ('str1', 'str2')` also had this issue
@@ -41,7 +41,7 @@ with tr as
     -- captures 6309 stays
     SELECT
       patientunitstayid, 0 as chartoffset
-    FROM eicu_crd.apacheapsvar
+    FROM apacheapsvar
     WHERE dialysis = 1  
 )
 SELECT
@@ -58,7 +58,7 @@ SELECT
         THEN 1
         ELSE 0 END
     ) AS chronic_dialysis
-FROM eicu_crd.patient pt
+FROM patient pt
 LEFT JOIN tr
   ON pt.patientunitstayid = tr.patientunitstayid
   AND tr.chartoffset >= 0 and tr.chartoffset <= 10080

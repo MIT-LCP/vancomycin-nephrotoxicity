@@ -11,10 +11,10 @@ SELECT
     WHEN apv.aids = 1 OR apv.immunosuppression = 1 THEN 1
     ELSE 0
   END AS immunocompromised
-FROM eicu_crd.patient pt
-INNER JOIN eicu_crd.apachepatientresult apr
+FROM patient pt
+INNER JOIN apachepatientresult apr
   ON pt.patientunitstayid = apr.patientunitstayid
   AND apr.apacheversion = 'IVa'
-INNER JOIN eicu_crd.apachepredvar apv
+INNER JOIN apachepredvar apv
   ON pt.patientunitstayid = apv.patientunitstayid
 ORDER BY pt.patientunitstayid;

@@ -16,7 +16,7 @@ SELECT
   m.frequency,
   map.classification,
   dosage
-FROM eicu_crd.medication m
+FROM medication m
 LEFT JOIN vanco.medication_frequency_map map
   on m.frequency = map.frequency
 WHERE 
