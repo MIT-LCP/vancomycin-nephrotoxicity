@@ -4,7 +4,7 @@ CREATE TABLE vanco.apache AS
 SELECT
   pt.patientunitstayid
   , CASE
-    WHEN apr.predictedhospitalmortality = -1 THEN NULL
+    WHEN apr.predictedhospitalmortality = '-1' THEN NULL
     ELSE apr.predictedhospitalmortality
   END as apache_prob
   , CASE
