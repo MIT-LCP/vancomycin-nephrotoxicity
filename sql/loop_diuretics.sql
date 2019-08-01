@@ -33,5 +33,6 @@ OR
   (drughiclseqno = 3664 OR lower(drugname) like '%bumex%' OR lower(drugname) like '%bumetanide%')
 AND drugordercancelled = 'No'
 AND prn = 'No'
-AND map.classification NOT IN ('prn')
+AND COALESCE(map.classification, '') NOT IN ('prn')
+AND lower(m.frequency) NOT LIKE '%prn%'
 ORDER BY patientunitstayid, drugstartoffset;

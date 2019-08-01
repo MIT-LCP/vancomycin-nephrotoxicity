@@ -34,6 +34,11 @@ CREATE SCHEMA vanco;
 \i cefepime.sql
 \i zosyn.sql
 
+-- demographics
+\i apache.sql
+\i weight.sql
+\i demographics.sql -- this required the weight query
+
 -- additional covariates used for propensity score
 \i nsaids.sql
 \i loop_diuretics.sql

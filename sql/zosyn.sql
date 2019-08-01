@@ -35,8 +35,11 @@ AND routeadmin IN (
 )
 AND drugordercancelled = 'No'
 AND prn = 'No'
-AND map.classification NOT IN
+AND COALESCE(map.classification, '') NOT IN
 (
   'TPN', 'dialysis', 'prophylactic', 'prn'
 )
+AND lower(m.frequency) NOT LIKE '%dialysis%'
+AND lower(m.frequency) NOT LIKE '%prn%'
+AND lower(m.frequency) NOT LIKE '%tpn%'
 ORDER BY patientunitstayid, drugstartoffset;
