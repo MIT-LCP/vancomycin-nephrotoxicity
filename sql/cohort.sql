@@ -50,6 +50,7 @@ valid_stay AS
         -- 'Direct Admit' -- around 5% are direct admits
         'Emergency Department'
     )
+    AND pt.hospitaldischargeyear >= 2005
 )
 -- first stay for a given patient
 -- orders patient by temporal identifiers
@@ -83,6 +84,7 @@ valid_stay AS
 )
 SELECT
   pt.patientunitstayid
+  , CASE WHEN pt.hospitaldischargeyear < 2005 THEN 1 ELSE 0 END AS exclude_before_2005
   , vs.exclude_sdu
   , vs.exclude_short_stay
   , CASE WHEN ed.patientunitstayid IS NULL THEN 1 ELSE 0 END AS exclude_non_ed_admit
