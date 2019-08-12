@@ -7,10 +7,10 @@
 -- decide which dataset to run queries on
 --  eicu_crd - publicly available dataset
 --  eicu_full_phi - internal larger dataset
-SET SEARCH_PATH TO eicu_full_phi;
+-- SET SEARCH_PATH TO eicu_full_phi;
 
 -- prepare vanco schema
-DROP SCHEMA IF EXISTS vanco;
+DROP SCHEMA IF EXISTS vanco CASCADE;
 CREATE SCHEMA vanco;
 
 -- load in tables from file
