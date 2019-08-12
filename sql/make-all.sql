@@ -37,7 +37,8 @@ CREATE SCHEMA vanco;
 -- demographics
 \i apache.sql
 \i weight.sql
-\i demographics.sql -- this required the weight query
+-- below requires the weight query
+\i demographics.sql
 
 -- additional covariates used for propensity score
 \i nsaids.sql
