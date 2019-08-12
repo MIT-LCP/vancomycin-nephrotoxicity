@@ -18,22 +18,23 @@ valid_stay AS
 )
 , pat_tb AS (
   SELECT pt.hospitalid
+    , pt.hospitaldischargeyear as yr
     , CAST(count(DISTINCT m.patientunitstayid) AS NUMERIC) as count_med
     , CAST(count(DISTINCT pt.patientunitstayid) AS NUMERIC) as count_all
   FROM patient pt
   LEFT JOIN med_tb m 
     ON pt.patientunitstayid = m.patientunitstayid
-  GROUP BY pt.hospitalid
+  GROUP BY pt.hospitalid, pt.hospitaldischargeyear
 )
 , hospitals_tb AS (
-    SELECT p.hospitalid
+    SELECT p.hospitalid, p.yr
         , p.count_med AS patients_med
         , p.count_all AS patients_all
         , p.count_med/p.count_all AS coverage
         , CASE WHEN p.count_med/p.count_all >= 0.8 THEN 0 ELSE 1 END AS exclude_no_med_interface
     FROM pat_tb p
 )
--- limit to ED patients as we know they will not be long term vanco user
+-- limit to patients admitted via the ED patients as we know they will not be long term vanco user
 , ed AS (
     SELECT patientunitstayid, uniquepid
       , CASE WHEN age = '> 89' THEN 91
@@ -98,6 +99,7 @@ LEFT JOIN valid_stay vs
   ON pt.patientunitstayid = vs.patientunitstayid
 LEFT JOIN hospitals_tb ht
   ON pt.hospitalid = ht.hospitalid
+  AND pt.hospitaldischargeyear = ht.yr
 LEFT JOIN ed
   ON pt.patientunitstayid = ed.patientunitstayid
 LEFT JOIN first_stay fs
