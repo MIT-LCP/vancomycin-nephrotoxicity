@@ -1,5 +1,4 @@
 # Miscellaneous scripts useful for analysis
-import random
 import math
 
 import numpy as np
@@ -61,12 +60,15 @@ def determine_apache_distribution(treatmentgroup, controlgroup):
     # Determine distribution of severity in
     # treatment group vs control group based on APACHE score.
     print('Counts of Apache Scores for Control Group and Treatment Group\n')
-    print(f'ApacheGroups\tControl\tTreatment')
+    print(f'ApacheGroups\tControl\tTreatment\tControl (%)\tTreat (%)')
 
     for apache_group in all_apache_groups:
         n_control = (controlgroup["apache_group"] == apache_group).sum()
         n_treat = (treatmentgroup["apache_group"] == apache_group).sum()
-        print(f'{apache_group}\t\t{n_control}\t{n_treat}', end='\t\t')
+        print(f'{apache_group}\t\t{n_control}\t{n_treat}', end='\t')
+        n_control = n_control / controlgroup.shape[0]*100.0
+        n_treat = n_treat / treatmentgroup.shape[0]*100.0
+        print(f'{n_control:3.1f}\t{n_treat:3.1f}')
 
     control_mu = controlgroup['apachescore'].mean()
     treat_mu = treatmentgroup['apachescore'].mean()
