@@ -97,7 +97,7 @@ SELECT
   , vs.exclude_sdu
   , vs.exclude_short_stay
   , CASE WHEN ed.patientunitstayid IS NULL THEN 1 ELSE 0 END AS exclude_non_ed_admit
-  , CASE WHEN fs.patientunitstayid IS NOT NULL THEN 1 ELSE 0 END AS exclude_secondary_stay
+  , CASE WHEN fs.patientunitstayid IS NULL THEN 1 ELSE 0 END AS exclude_secondary_stay
   , CASE WHEN ap.patientunitstayid IS NULL THEN 1 ELSE 0 END AS exclude_missing_apache
   , ht.exclude_no_med_interface
   , CASE WHEN dt.chronic_dialysis = 1 THEN 1 ELSE 0 END AS exclude_dialysis_chronic
@@ -116,7 +116,7 @@ LEFT JOIN ed
   ON pt.patientunitstayid = ed.patientunitstayid
 LEFT JOIN first_stay fs
   ON pt.patientunitstayid = fs.patientunitstayid
-  AND fs.rn > 1
+  AND fs.rn = 1
 LEFT JOIN ap
   ON pt.patientunitstayid = ap.patientunitstayid
 LEFT JOIN cr0
