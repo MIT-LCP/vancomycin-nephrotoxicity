@@ -69,6 +69,15 @@ valid_stay AS
       ORDER BY hospitaladmitoffset DESC, hospitaldischargeyear, age, patientunitstayid
     )
 )
+-- must have APACHE-IV score (equivalent to APACHE III score)
+, ap AS (
+  SELECT patientunitstayid
+  FROM apachepatientresult
+  WHERE apacheversion = 'IVa'
+  AND predictedhospitalmortality IS NOT NULL
+  AND predictedhospitalmortality != ''
+  AND predictedhospitalmortality != '-1'
+)
 -- must have creatinine on baseline [-12, 12] and between [48,168]
 , cr0 AS (
     SELECT DISTINCT patientunitstayid
@@ -89,6 +98,7 @@ SELECT
   , vs.exclude_short_stay
   , CASE WHEN ed.patientunitstayid IS NULL THEN 1 ELSE 0 END AS exclude_non_ed_admit
   , CASE WHEN fs.patientunitstayid IS NOT NULL THEN 1 ELSE 0 END AS exclude_secondary_stay
+  , CASE WHEN ap.patientunitstayid IS NULL THEN 1 ELSE 0 END AS exclude_missing_apache
   , ht.exclude_no_med_interface
   , CASE WHEN dt.chronic_dialysis = 1 THEN 1 ELSE 0 END AS exclude_dialysis_chronic
   , CASE WHEN dt.dialysis = 1 THEN 1 ELSE 0 END AS exclude_dialysis_first_week
@@ -107,6 +117,8 @@ LEFT JOIN ed
 LEFT JOIN first_stay fs
   ON pt.patientunitstayid = fs.patientunitstayid
   AND fs.rn > 1
+LEFT JOIN ap
+  ON pt.patientunitstayid = ap.patientunitstayid
 LEFT JOIN cr0
   ON pt.patientunitstayid = cr0.patientunitstayid
 LEFT JOIN cr7
