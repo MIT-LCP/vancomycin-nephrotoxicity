@@ -23,7 +23,7 @@ SELECT
     ON cr1.patientunitstayid = cr2.patientunitstayid
     AND cr1.chartoffset >= cr2.chartoffset
     AND cr1.chartoffset <= (cr2.chartoffset + 2880)
-  WHERE cr1.chartoffset BETWEEN (-12*60) AND (24*60*7)
+  WHERE cr1.chartoffset BETWEEN (12*60) AND (24*60*7)
   GROUP BY cr1.patientunitstayid, cr1.chartoffset, cr1.creatinine
 )
 SELECT
