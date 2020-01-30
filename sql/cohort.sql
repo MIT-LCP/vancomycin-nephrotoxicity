@@ -93,6 +93,12 @@ valid_stay AS
 )
 SELECT
   pt.patientunitstayid
+  , CASE
+      WHEN pt.hospitalid >= 1 AND pt.hospitalid <= 55 THEN 1 
+      WHEN pt.hospitalid >= 228 AND pt.hospitalid <= 240 THEN 1
+      WHEN pt.hospitalid >= 291 AND pt.hospitalid <= 299 THEN 1
+      WHEN pt.hospitalid >= 366 AND pt.hospitalid <= 380 THEN 1
+    ELSE 0 END AS exclude_corrupt_hospitals
   , CASE WHEN pt.hospitaldischargeyear < 2005 THEN 1 ELSE 0 END AS exclude_before_2005
   , vs.exclude_sdu
   , vs.exclude_short_stay
