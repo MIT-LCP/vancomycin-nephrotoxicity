@@ -11,6 +11,10 @@ SELECT
     WHEN apv.aids = 1 OR apv.immunosuppression = 1 THEN 1
     ELSE 0
   END AS immunocompromised
+  -- raw data for debugging
+  , apr.acutephysiologyscore
+  , apr.apachescore
+  , CAST(apr.predictedhospitalmortality AS NUMERIC) AS predictedhospitalmortality
 FROM patient pt
 INNER JOIN apachepatientresult apr
   ON pt.patientunitstayid = apr.patientunitstayid
