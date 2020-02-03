@@ -155,7 +155,7 @@ def prepare_dataframe(co, dem, aki, apache, dx, drug_dfs=None):
     )
 
     aki_grp = aki.groupby('patientunitstayid')[[
-        'creatinine', 'aki_48h', 'aki_7d'
+        'creatinine', 'creatinine_baseline', 'aki_48h', 'aki_7d'
     ]].max()
     aki_grp.reset_index(inplace=True)
     df = df.merge(aki_grp, how='inner', on='patientunitstayid')
@@ -167,6 +167,15 @@ def prepare_dataframe(co, dem, aki, apache, dx, drug_dfs=None):
             f' patients have AKI.'
         )
     )
+
+    # add GFR using baseline creatinine
+    # eGFR = 175 x (SCr)^-1.154 x (age)^-0.203 x 0.742 [if female] x 1.212 [if Black]
+    df['egfr'] = 175 * np.power(df['creatinine_baseline'],
+                                -1.154) * np.power(df['age'], -0.203)
+    idxFemale = df['gender'] == 'Female'
+    df.loc[idxFemale, 'egfr'] = df.loc[idxFemale, 'egfr'] * 0.742
+    idxBlack = df['ethnicity'] == 'African American'
+    df.loc[idxBlack, 'egfr'] = df.loc[idxBlack, 'egfr'] * 1.212
 
     # add in apache/diagnosis data
     apache_columns = ['patientunitstayid', 'apache_prob', 'immunocompromised']
@@ -463,7 +472,7 @@ def proportion_confidence_interval(f, method='Bonett-Price', alpha=0.05):
     # phat should sum to 1, as it is a matrix of proportions for paired samples
     N = np.sum(f, axis=None)
 
-    return _paired_confidence_interval(
+    return _proportion_confidence_interval(
         n12=f[0, 1], n21=f[1, 0], N=N, method=method
     )
 
