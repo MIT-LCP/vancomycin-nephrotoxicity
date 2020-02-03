@@ -355,6 +355,79 @@ def mcnemar_test(f):
 # n21 = f[0, 1]
 
 
+def cmh_test(
+    x, alpha=0.05, exact=False, test_type='two-sided', continuity=True
+):
+    """Cochran Mantel Haenszel estimate of exposure adjusting for confounding.
+
+    x should be a 2x2xK contingency table, where K is the number of strata for
+    the confounding variable.
+    """
+    # x should be 2x2xK
+    assert len(x.shape) == 3
+    assert x.shape[0:2] == (2, 2)
+
+    # total cases in each strata
+    T = x.sum(axis=0).sum(axis=0)
+
+    # need at least 1 sample in each stratum
+    assert all(T > 0)
+
+    I, J, K = x.shape
+
+    # row/column totals used in the statistic
+    n1i = x.sum(axis=1)[0, :]
+    n2i = x.sum(axis=1)[1, :]
+    m1i = x.sum(axis=0)[0, :]
+    m2i = x.sum(axis=0)[1, :]
+
+    # We test against a chi2 statistic with dof 1
+    statistic = np.sum(x[0, 0, :] - (n1i * m1i / T))
+    statistic_sign = np.sign(statistic)
+
+    # Yates continuity correction
+    if continuity & (np.abs(statistic) >= 0.5):
+        statistic = np.abs(statistic) - 0.5
+
+    statistic = statistic**2 / np.sum(
+        n1i * n2i * m1i * m2i / (np.power(T, 2) * (T - 1))
+    )
+
+    if test_type != 'two-sided':
+        # if one sided, take the square root and do z-test
+        statistic = np.sqrt(statistic) * statistic_sign
+        pval = norm.sf(statistic)
+    else:
+        # calculate the p-value for the statistic: 1 dof chi2
+        pval = chi2.sf(statistic, df=1)
+
+    # common odds-ratio (Mantel-Haenszel, 1959)
+    main_diag_sum = np.sum(x[0, 0, :] * x[1, 1, :] / T)
+    off_diag_sum = np.sum(x[0, 1, :] * x[1, 0, :] / T)
+    R = main_diag_sum / off_diag_sum
+
+    # Robins et al. (1986) estimate of the standard deviation of log CMH
+    term1 = np.sum(
+        (x[0, 0, :] + x[1, 1, :]) * x[0, 0, :] * x[1, 1, :] / np.power(T, 2)
+    ) / (2 * np.power(main_diag_sum, 2))
+    term2 = np.sum(
+        (
+            (x[0, 0, :] + x[1, 1, :]) * x[0, 1, :] * x[1, 0, :] +
+            (x[0, 1, :] + x[1, 0, :]) * x[0, 0, :] * x[1, 1, :]
+        ) / np.power(T, 2)
+    ) / (2 * main_diag_sum * off_diag_sum)
+    term3 = np.sum(
+        (x[0, 1, :] + x[1, 0, :]) * x[0, 1, :] * x[1, 0, :] / np.power(T, 2)
+    ) / (2 * np.power(off_diag_sum, 2))
+    sigma = np.sqrt(term1 + term2 + term3)
+
+    # un-log the estimate to get confidence intervals
+    ci_lower = R * np.exp(1 * norm.ppf(alpha / 2) * sigma)
+    ci_upper = R * np.exp(-1 * norm.ppf(alpha / 2) * sigma)
+
+    return pval, R, (ci_lower, ci_upper)
+
+
 def _proportion_confidence_interval(
     n12, n21, N, method='Bonett-Price', alpha=0.05
 ):
@@ -452,7 +525,6 @@ def propensity_match(
         'immunocompromised'
     ],
     outcome_var='aki',
-    n_models=100,
     seed=389202
 ):
 
@@ -516,7 +588,7 @@ def propensity_match(
 
     # predict the y outcome balancing the classes
     # repeat 100 times to be sure we use a lot of majority class data
-    m.fit_scores(balance=True, nmodels=n_models)
+    m.fit_scores(balance=False)
     m.predict_scores()
 
     # m.plot_scores()
@@ -524,7 +596,6 @@ def propensity_match(
     # m.tune_threshold(method='random')
     m.match(method="min", nmatches=1, threshold=0.0005)
     # m.record_frequency()
-    m.assign_weight_vector()
 
     # no categorical variables -> this errors
     # cc = m.compare_continuous(return_table=True)
@@ -532,25 +603,85 @@ def propensity_match(
     return m
 
 
-def calculate_or(m, exposure_var='status', outcome_var='aki'):
-    """Calculate Odds Ratio for matched pairs in propensity analysis."""
-    df_matched = m.matched_data[['match_id', exposure_var, outcome_var]].copy()
-    df_matched = df_matched.loc[df_matched[exposure_var] == 0].merge(
-        df_matched.loc[df_matched[exposure_var] == 1],
+def get_contingency_tables(m, outcome_var='aki'):
+    """Get 2x2xK contingency tables for matched pairs in propensity analysis.
+
+    Contingency tables will be output in the following form:
+
+    [
+        Number exposed with outcome == 1, Number exposed with outcome == 0
+        Number unexposed with outcome == 1, Number unexposed with outcome == 0
+    ]
+
+    The input match object must be populated with match using nmatches=1.
+    """
+
+    # in the matched object, m.yvar is the exposure variable
+    df_matched = m.matched_data[['match_id', 'record_id', m.yvar, outcome_var]]
+
+    # determine the minority group
+    # this group will be matched to more than one case
+    idxMinority = df_matched[m.yvar] == m.minority
+
+    df_matched = df_matched.loc[idxMinority].merge(
+        df_matched.loc[~idxMinority],
         how='inner',
         on='match_id',
-        suffixes=('_control', '_case')
+        suffixes=('_minority', '_majority')
     )
 
-    cm = pd.crosstab(
-        df_matched[f'{outcome_var}_case'], df_matched[f'{outcome_var}_control']
+    # drop the redundant yvar column
+    df_matched.drop(
+        [f'{m.yvar}_{s}' for s in ('minority', 'majority')],
+        axis=1,
+        inplace=True
     )
-    # ensure it is ordered from positive to negative
-    cm = cm.loc[[1, 0], [1, 0]]
-    f = cm.values
 
-    theta, ci = odds_ratio_confidence_interval(
-        f, method='wilson_score', alpha=0.05
+    # group them by the strata
+    df_grouped = df_matched.groupby(
+        ['record_id_minority', 'aki_minority', 'aki_majority']
+    )[['match_id']].count()
+    df_grouped = df_grouped.reset_index()
+
+    K = df_grouped['record_id_minority'].nunique()
+    cm = np.zeros([2, 2, K])
+
+    # pivot the dataframe into a 2x2xK contingency table
+    # we do this by creating the i/j/k indices, then inserting the count into a matrix of 0s
+
+    # create an integer grouped by the strata
+    df_grouped['k'] = df_grouped['record_id_minority'].rank(method='dense'
+                                                           ).astype(int) - 1
+
+    # below we guarantee the exposed cases are in the 0th row
+    if m.minority == 1:
+        # if minority are exposed, then majority should go in [1, :]
+        i = np.ones(df_grouped.shape[0], dtype=int)
+    else:
+        # if minority are *not* exposed, then majority are exposed
+        # therefore, place majority cases in [0, :]
+        i = np.zeros(df_grouped.shape[0], dtype=int)
+    j = 1 - df_grouped[f'{outcome_var}_majority']
+    k = df_grouped['k']
+
+    # insert the count of observations
+    cm[i, j, k] = df_grouped['match_id']
+
+    # now drop the non-minority rows, we have 1 match for each
+    df_grouped.drop_duplicates(
+        ['record_id_minority'], keep='first', inplace=True
     )
-    logger.info(f'Odds ratio: {theta:3.2f} [{ci[0]:3.2f} - {ci[1]:3.2f}].')
-    return theta, ci
+    # i is 1 if the minority class is the non-exposed class
+    if m.minority == 1:
+        # i is 0 if the minority class is the exposed class
+        i = np.zeros(K, dtype=int)
+    else:
+        i = np.ones(K, dtype=int)
+
+    # ensure that events occuring are placed in the 0th column
+    # ensure that non-events are placed in the 1st column
+    j = 1 - df_grouped[f'{outcome_var}_minority']
+    k = df_grouped['k']
+    cm[i, j, k] = 1
+
+    return cm
