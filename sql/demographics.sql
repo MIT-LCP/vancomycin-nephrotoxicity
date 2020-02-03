@@ -32,7 +32,8 @@ demographics AS (
   SELECT 
     p.patientUnitStayID, 
     p.age, 
-    p.gender, 
+    p.gender,
+    CASE WHEN p.ethnicity = '' THEN NULL ELSE p.ethnicity END AS ethnicity,
     w.weight_avg,
     (CASE 
         WHEN p.admissionHeight >90 AND p.admissionHeight <300 THEN p.admissionHeight
@@ -56,6 +57,7 @@ SELECT
   unitdischargeoffset,
   age,
   gender,
+  ethnicity,
   weight_avg AS weight,
   height,
   BMI,
