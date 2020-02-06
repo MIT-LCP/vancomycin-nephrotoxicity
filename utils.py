@@ -168,15 +168,6 @@ def prepare_dataframe(co, dem, aki, apache, dx, drug_dfs=None):
         )
     )
 
-    # add GFR using baseline creatinine
-    # eGFR = 175 x (SCr)^-1.154 x (age)^-0.203 x 0.742 [if female] x 1.212 [if Black]
-    df['egfr'] = 175 * np.power(df['creatinine_baseline'],
-                                -1.154) * np.power(df['age'], -0.203)
-    idxFemale = df['gender'] == 'Female'
-    df.loc[idxFemale, 'egfr'] = df.loc[idxFemale, 'egfr'] * 0.742
-    idxBlack = df['ethnicity'] == 'African American'
-    df.loc[idxBlack, 'egfr'] = df.loc[idxBlack, 'egfr'] * 1.212
-
     # add in apache/diagnosis data
     apache_columns = ['patientunitstayid', 'apache_prob', 'immunocompromised']
     df = df.merge(apache[apache_columns], how='left', on='patientunitstayid')
@@ -228,6 +219,15 @@ def prepare_dataframe(co, dem, aki, apache, dx, drug_dfs=None):
     idx = df['apache_group'] == '-1'
     df.loc[idx, 'apache_group'] = 'missing'
 
+    # add GFR using baseline creatinine
+    # eGFR = 175 x (SCr)^-1.154 x (age)^-0.203 x 0.742 [if female] x 1.212 [if Black]
+    df['egfr'] = 175 * np.power(df['creatinine_baseline'],
+                                -1.154) * np.power(df['age'], -0.203)
+    idxFemale = df['gender'] == 'Female'
+    df.loc[idxFemale, 'egfr'] = df.loc[idxFemale, 'egfr'] * 0.742
+    idxBlack = df['ethnicity'] == 'African American'
+    df.loc[idxBlack, 'egfr'] = df.loc[idxBlack, 'egfr'] * 1.212
+
     # finally, add the drug dataframes
     if drug_dfs is not None:
         for ddf in drug_dfs:
@@ -239,6 +239,16 @@ def prepare_dataframe(co, dem, aki, apache, dx, drug_dfs=None):
             for c in ddf.columns:
                 df[c].fillna(0, inplace=True)
                 df[c] = df[c].astype(int)
+
+            # simplify one column as the logical AND of the two
+            drug_cols = ddf.columns
+            drug_name = [c.split('_')[0] for c in ddf.columns]
+            assert drug_name[0] == drug_name[1]
+            drug_name = drug_name[0]
+
+            df[drug_name] = (df[drug_cols[0]] == 1) & (df[drug_cols[1]] == 1)
+            df[drug_name] = df[drug_name].astype(int)
+            df.drop(drug_cols, axis=1, inplace=True)
 
     # set patientunitstayid as index
     df.set_index('patientunitstayid', inplace=True)
