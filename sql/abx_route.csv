@@ -1,0 +1,377 @@
+"routeadmin","Code","Preferred Description","Ambiguous"
+".","UNK","Unknown",0
+".ROUTE","UNK","Unknown",0
+".SEE ORDER","UNK","Unknown",0
+"*","UNK","Unknown",0
+"***special","UNK","Unknown",0
+"*IV","IV","Infusion, intravenous",0
+"ANTIBIO LCK","UNK","Unknown",0
+"AO","UNK","Unknown",0
+"Arterial","IA","Infusion, intraarterial catheter",0
+"Both Eyes","OPTHALTA","Topical application, ophthalmic",0
+"BOTH EYES","OPTHALTA","Topical application, ophthalmic",0
+"BURETROL","UNK","Unknown",0
+"BY MOUTH","PO","Swallow, oral",0
+"CATH","IV","Infusion, intravenous",1
+"Catheter","IV","Infusion, intravenous",1
+"CATHETER FLU","IV","Infusion, intravenous",1
+"Catheter lock","IV","Infusion, intravenous",1
+"CBI","UNK","Unknown",0
+"CD:1508614681","UNK","Unknown",0
+"CD:17752441","UNK","Unknown",0
+"CD:2285912007","UNK","Unknown",0
+"CD:2661836037","UNK","Unknown",0
+"CD:3845599","UNK","Unknown",0
+"CD:7362257","UNK","Unknown",0
+"CENTRAL IV","IVINJ","Injection, intravenous",0
+"CHESTTUBE","CTINSTL","Instillation, chest tube",0
+"COLOSTOMY","CECINSTL","Instillation, cecostomy",0
+"CONSULT","UNK","Unknown",0
+"COSIG IL","IILEALINJ","Instillation, intraileal",0
+"COSIG RECT","PR","Insertion, rectal",0
+"CRRT","CAPDINSTL","Instillation, continuous ambulatory peritoneal dialysis port",0
+"DBHF","NGT","Instillation, nasogastric tube",0
+"DENTAL","DEN","Topical application, dental",0
+"DEVICE","UNK","Unknown",0
+"DHT","UNK","Unknown",0
+"DIAL","HEMODIFF","Diffusion, hemodialysis",0
+"DIALYSIS","HEMODIFF","Diffusion, hemodialysis",0
+"DIALYSIS CAT","HEMODIFF","Diffusion, hemodialysis",0
+"DOBHOFF","NGT","Instillation, nasogastric tube",0
+"Dobhoff Tube","NGT","Instillation, nasogastric tube",0
+"Dophoff Tube","NGT","Instillation, nasogastric tube",0
+"DUODENAL","IDUODINSTIL","Instillation, intraduodenal",0
+"Dwell","BLADINSTL","Instillation, urinary catheter",1
+"DWELL","BLADINSTL","Instillation, urinary catheter",1
+"ENEMA","ENEMA","Enema, rectal",0
+"ENTE","EFT","Instillation, enteral feeding tube",0
+"ENTERAL","EFT","Instillation, enteral feeding tube",0
+"EX","UNK","Unknown",0
+"EXTENDEDIV","IV","Infusion, intravenous",0
+"EYE","OPTHALTA","Topical application, ophthalmic",0
+"Eye (Right)","OPTHALTA","Topical application, ophthalmic",0
+"Eye-Affected","OPTHALTA","Topical application, ophthalmic",0
+"FEED TUBE","EFT","Instillation, enteral feeding tube",0
+"Feeding Tube","EFT","Instillation, enteral feeding tube",0
+"FEEDING TUBE","EFT","Instillation, enteral feeding tube",0
+"FEEDING_TUBE","EFT","Instillation, enteral feeding tube",0
+"FEEDTUBE","EFT","Instillation, enteral feeding tube",0
+"FM","UNK","Unknown",0
+"FT","EFT","Instillation, enteral feeding tube",0
+"FTUB","EFT","Instillation, enteral feeding tube",0
+"G Tube","GT","Instillation, gastrostomy tube",0
+"G-TUBE","GT","Instillation, gastrostomy tube",0
+"G-Tube","GT","Instillation, gastrostomy tube",0
+"G-tube (Gast","GT","Instillation, gastrostomy tube",0
+"G/J tube","JJTINSTL","Instillation, jejunostomy tube",0
+"GASTRIC TU","GT","Instillation, gastrostomy tube",0
+"GASTRIC TUBE","GT","Instillation, gastrostomy tube",0
+"Gastric Tube (PEG)","GT","Instillation, gastrostomy tube",0
+"Gastrostomy Tube","GT","Instillation, gastrostomy tube",0
+"GT","GT","Instillation, gastrostomy tube",0
+"GTT","GT","Instillation, gastrostomy tube",0
+"Gtub","GT","Instillation, gastrostomy tube",0
+"GTUBE","GT","Instillation, gastrostomy tube",0
+"GTube","GT","Instillation, gastrostomy tube",0
+"Gtube","GT","Instillation, gastrostomy tube",0
+"HDU","HEMODIFF","Diffusion, hemodialysis",1
+"HE","HEMODIFF","Diffusion, hemodialysis",1
+"HEMODIALYS","HEMODIFF","Diffusion, hemodialysis",0
+"HPO","UNK","Unknown",0
+"HPT","UNK","Unknown",0
+"I-DERMAL","IDINJ","Injection, intradermal",0
+"I-ocular","IOINJ","Injection, intraocular",0
+"I-PERI","IPERINJ","Injection, intraperitoneal",0
+"I-peritoneal","IPERINJ","Injection, intraperitoneal",0
+"IAtc","IARTINJ","Injection, intraarticular",0
+"IC Dwell","BLADINSTL","Instillation, urinary catheter",1
+"IDrm","IDINJ","Injection, intradermal",0
+"IH","UNK","Unknown",0
+"IJ","JJTINSTL","Instillation, jejunostomy tube",0
+"IK","ICORONINJ","Injection, intracoronary",1
+"IL","IILEALINJ","Instillation, intraileal",0
+"ILEOSTOMY","IILEALINJ","Instillation, intraileal",0
+"IM","IM","Injection, intramuscular",0
+"IM (injection)                                                                                      ","IM","Injection, intramuscular",0
+"IM/IV","IM","Injection, intramuscular",0
+"in 100ml NS. ENEMA","ENEMA","Enema, rectal",0
+"IN VITRO","IV","Infusion, intravenous",1
+"INF","PARENTINJ","Injection, parenteral",1
+"INFILTRATION","PARENTINJ","Injection, parenteral",1
+"INFO","UNK","Unknown",0
+"INH","ORINHL","Inhalation, respiratory",1
+"Inhalation","ORINHL","Inhalation, respiratory",1
+"INJ","IVINJ","Injection, intravenous",1
+"Inj","IVINJ","Injection, intravenous",1
+"InPl","IPERINJ","Injection, intraperitoneal",1
+"Instill","ENTINSTL","Instillation, enteral",1
+"INT PERIT","IPERINJ","Injection, intraperitoneal",0
+"Intercatheter","IV","Infusion, intravenous",1
+"INTH","ITINJ","Injection, intrathecal",0
+"Intra-articular","IARTINJ","Injection, intraarticular",0
+"INTRA-CATHET","IV","Infusion, intravenous",1
+"Intracatheter","IV","Infusion, intravenous",1
+"Intracolonic","CECINSTL","Instillation, cecostomy",0
+"INTRADIALYSATE","HEMODIFF","Diffusion, hemodialysis",1
+"Intralesional","ILESINJ","Injection, intralesional",0
+"INTRALUMIN","ILUMINJ","Injection, intraluminal",0
+"INTRAMUSCU","IM","Injection, intramuscular",0
+"Intramuscular","IM","Injection, intramuscular",0
+"INTRAMUSCULAR","IM","Injection, intramuscular",0
+"IntraMUSCULAR","IM","Injection, intramuscular",0
+"Intraocular","IOINJ","Injection, intraocular",0
+"INTRAOSSEOUS","IOSSINJ","Injection, intraosseous",0
+"INTRAPERIT","IPERINJ","Injection, intraperitoneal",0
+"Intraperiton","IPERINJ","Injection, intraperitoneal",0
+"Intraperitoneal","IPERINJ","Injection, intraperitoneal",0
+"INTRAPERITONEAL","IPERINJ","Injection, intraperitoneal",0
+"IntraPeritoneal","IPERINJ","Injection, intraperitoneal",0
+"INTRATHECA","ITINJ","Injection, intrathecal",0
+"Intrathecal","ITINJ","Injection, intrathecal",0
+"IntraTHEcal","ITINJ","Injection, intrathecal",0
+"INTRATHECAL","ITINJ","Injection, intrathecal",0
+"Intrathecal (injection)","ITINJ","Injection, intrathecal",0
+"Intrathecal (injection)                                                                             ","ITINJ","Injection, intrathecal",0
+"INTRAVEN","IV","Infusion, intravenous",0
+"INTRAVEN.","IV","Infusion, intravenous",0
+"INTRAVENOU","IV","Infusion, intravenous",0
+"Intravenous","IV","Infusion, intravenous",0
+"IntraVENOUS","IV","Infusion, intravenous",0
+"INTRAVENOUS","IV","Infusion, intravenous",0
+"INTRAVENOUS PIGGY BACK","IVPB","Infusion, intravenous piggyback",0
+"Intraventricular","IVENTINJ","Injection, intraventricular (heart)",0
+"INTRAVITRE","IVITINJ","Injection, intravitreal",0
+"INTRAVITREAL","IVITINJ","Injection, intravitreal",0
+"Intravitreal","IVITINJ","Injection, intravitreal",0
+"INTRPERI","IPERINJ","Injection, intraperitoneal",0
+"IO","IOINJ","Injection, intraocular",0
+"IOCULAR","IOINJ","Injection, intraocular",0
+"IP","IPERINJ","Injection, intraperitoneal",0
+"IPERITONEAL","IPERINJ","Injection, intraperitoneal",0
+"IPERT","IPERINJ","Injection, intraperitoneal",0
+"IR","RECINSTL","Instillation, rectal",0
+"IRR","IRRIG","Irrigation",0
+"IRRG","IRRIG","Irrigation",0
+"IRRI","IRRIG","Irrigation",0
+"IRRIG","IRRIG","Irrigation",0
+"IRRIGATE","IRRIG","Irrigation",0
+"Irrigation","IRRIG","Irrigation",0
+"IRRIGATION","IRRIG","Irrigation",0
+"IRRIGATN","IRRIG","Irrigation",0
+"IT","ITINJ","Injection, intrathecal",0
+"ITHECAL","ITINJ","Injection, intrathecal",0
+"ITRC","RECINSTL","Instillation, rectal",0
+"ITV","IVITINJ","Injection, intravitreal",0
+"IV","IV","Infusion, intravenous",0
+"IV - brief infusion (injection)","IVINJBOL","Injection, intravenous, bolus",0
+"IV - brief infusion (injection)                                                                     ","IVINJ","Injection, intravenous",0
+"IV - brief infusion (intravenous)","IVINJBOL","Injection, intravenous, bolus",0
+"IV - brief infusion (intravenous)                                                                   ","IV","Infusion, intravenous",0
+"IV (injection)","IVINJ","Injection, intravenous",0
+"IV (injection)                                                                                      ","IVINJ","Injection, intravenous",0
+"IV (intravenous)","IV","Infusion, intravenous",0
+"IV (intravenous)                                                                                    ","IV","Infusion, intravenous",0
+"IV Continuous","IV","Infusion, intravenous",0
+"IV INFUSION","IV","Infusion, intravenous",0
+"IV Piggyback","IVPB","Infusion, intravenous piggyback",0
+"IV Push","IVPUSH","Injection, intravenous, push",0
+"IV PUSH","IVPUSH","Injection, intravenous, push",0
+"IV Sedation","IV","Infusion, intravenous",0
+"IV-Continuous","IVCC","Infusion, intravenous catheter, continuous",0
+"IV-Intermittent","IVCI","Infusion, intravenous catheter, intermittent",0
+"IV-Push","IVPUSH","Injection, intravenous, push",0
+"IV*","IV","Infusion, intravenous",0
+"IV112","IV","Infusion, intravenous",0
+"IVD","IV","Infusion, intravenous",0
+"IVDRIP","IV","Infusion, intravenous",0
+"IVENTRIC","IV","Infusion, intravenous",0
+"IVI","IV","Infusion, intravenous",0
+"IVNT","IV","Infusion, intravenous",0
+"IVNTRC","IV","Infusion, intravenous",0
+"IVP","IVPUSH","Injection, intravenous, push",0
+"IVPB","IVPB","Infusion, intravenous piggyback",0
+"IVPUSH","IVPUSH","Injection, intravenous, push",0
+"IZ","UNK","Unknown",0
+"J Tube","JJTINSTL","Instillation, jejunostomy tube",0
+"J TUBE","JJTINSTL","Instillation, jejunostomy tube",0
+"J_TUBE","JJTINSTL","Instillation, jejunostomy tube",0
+"J-TUBE","JJTINSTL","Instillation, jejunostomy tube",0
+"J-Tube","JJTINSTL","Instillation, jejunostomy tube",0
+"J-tube","JJTINSTL","Instillation, jejunostomy tube",0
+"J-tube(Jeju)","JJTINSTL","Instillation, jejunostomy tube",0
+"Jejunostomy Tube","JJTINSTL","Instillation, jejunostomy tube",0
+"JEJUNOSTOMYTUBE","JJTINSTL","Instillation, jejunostomy tube",0
+"JPEG","JJTINSTL","Instillation, jejunostomy tube",0
+"JT","JJTINSTL","Instillation, jejunostomy tube",0
+"JTub","JJTINSTL","Instillation, jejunostomy tube",0
+"JTUBE","JJTINSTL","Instillation, jejunostomy tube",0
+"LEFT EYE","OPTHALTA","Topical application, ophthalmic",0
+"LOC","UNK","Unknown",0
+"Local Infiltration","PARENTINJ","Injection, parenteral",1
+"LOCK","UNK","Unknown",0
+"MC","UNK","Unknown",0
+"MIS","UNK","Unknown",0
+"MISC","UNK","Unknown",0
+"Misc","UNK","Unknown",0
+"misc","UNK","Unknown",0
+"MISCELL.","UNK","Unknown",0
+"Miscellaneou","UNK","Unknown",0
+"Miscellaneous","UNK","Unknown",0
+"MISCELLANEOUS","UNK","Unknown",0
+"Miscellaneous (medical supplies non-drugs) (Miscellaneous)                                          ","UNK","Unknown",0
+"MM","UNK","Unknown",0
+"MT","UNK","Unknown",0
+"N/A","NONE","None/Not applicable",0
+"Nasal","NASALINSTIL","Instillation, nasal",0
+"Nasl","NASALINSTIL","Instillation, nasal",0
+"NASL","NASALINSTIL","Instillation, nasal",0
+"NASOGAST.","NGT","Instillation, nasogastric tube",0
+"NASOGASTRI","NGT","Instillation, nasogastric tube",0
+"Nasogastric Tube","NGT","Instillation, nasogastric tube",0
+"NASOGASTRIC TUBE","NGT","Instillation, nasogastric tube",0
+"Nasogastric tube","NGT","Instillation, nasogastric tube",0
+"ND","UNK","Unknown",0
+"NEB","NEB","Inhalation, nebulization",0
+"Nebulization","NEB","Inhalation, nebulization",0
+"NG","NGT","Instillation, nasogastric tube",0
+"NG or OG","NGT","Instillation, nasogastric tube",0
+"NG Tube","NGT","Instillation, nasogastric tube",0
+"NG TUBE","NGT","Instillation, nasogastric tube",0
+"NG_TUBE","NGT","Instillation, nasogastric tube",0
+"NG- NasoGast","NGT","Instillation, nasogastric tube",0
+"NG-TUBE","NGT","Instillation, nasogastric tube",0
+"NG-tube","NGT","Instillation, nasogastric tube",0
+"NG-Tube","NGT","Instillation, nasogastric tube",0
+"NG/PO","NGT","Instillation, nasogastric tube",0
+"NGT","NGT","Instillation, nasogastric tube",0
+"NGTUBE","NGT","Instillation, nasogastric tube",0
+"NGtube","NGT","Instillation, nasogastric tube",0
+"NJ","JJTINSTL","Instillation, jejunostomy tube",1
+"No route","NONE","None/Not applicable",0
+"NONE","NONE","None/Not applicable",0
+"OD","UNK","Unknown",0
+"OG","OGT","Instillation, orogastric tube",0
+"OG- OralGast","OGT","Instillation, orogastric tube",0
+"OG-tube","OGT","Instillation, orogastric tube",0
+"OGT","OGT","Instillation, orogastric tube",0
+"OP","OPTHALTA","Topical application, ophthalmic",0
+"OPH","OPTHALTA","Topical application, ophthalmic",0
+"OPHT","OPTHALTA","Topical application, ophthalmic",0
+"OPHTH","OPTHALTA","Topical application, ophthalmic",0
+"OPHTHALMIC","OPTHALTA","Topical application, ophthalmic",0
+"Ophthalmic","OPTHALTA","Topical application, ophthalmic",0
+"OPT","OPTHALTA","Topical application, ophthalmic",0
+"ORA","PO","Swallow, oral",0
+"Oral","PO","Swallow, oral",0
+"ORAL","PO","Swallow, oral",0
+"ORAL GASTR","GT","Instillation, gastrostomy tube",0
+"Oral Gastric Tube","GT","Instillation, gastrostomy tube",0
+"ORAL/GASTRIC TUBE","GT","Instillation, gastrostomy tube",0
+"ORAL/TUBE","GT","Instillation, gastrostomy tube",0
+"ORATOP","TOPICAL","Topical",0
+"OS","UNK","Unknown",0
+"Ostomy","CECINSTL","Instillation, cecostomy",0
+"OSTOMY","CECINSTL","Instillation, cecostomy",0
+"Other","UNK","Unknown",0
+"OTHER","UNK","Unknown",0
+"Other (See Admin Instructions)","UNK","Unknown",0
+"OU","OPTHALTA","Topical application, ophthalmic",0
+"PB","IVPB","Infusion, intravenous piggyback",0
+"PD","PDPINSTL","Instillation, peritoneal dialysis port",0
+"PD FLUID","PDPINSTL","Instillation, peritoneal dialysis port",0
+"PEDIV","IV","Infusion, intravenous",0
+"PEDREC","PR","Insertion, rectal",0
+"PEG","GT","Instillation, gastrostomy tube",0
+"PEG TUBE","GT","Instillation, gastrostomy tube",0
+"PEG-tube","GT","Instillation, gastrostomy tube",0
+"PEGT","GT","Instillation, gastrostomy tube",0
+"PEGTUBE","GT","Instillation, gastrostomy tube",0
+"PegTube","GT","Instillation, gastrostomy tube",0
+"PEJ","JJTINSTL","Instillation, jejunostomy tube",0
+"Per enteric tube (oral)","EFT","Instillation, enteral feeding tube",0
+"Per enteric tube (oral)                                                                             ","EFT","Instillation, enteral feeding tube",0
+"PER G TUBE","GT","Instillation, gastrostomy tube",0
+"Per G Tube","GT","Instillation, gastrostomy tube",0
+"PER J TUBE","JJTINSTL","Instillation, jejunostomy tube",0
+"Per J Tube","JJTINSTL","Instillation, jejunostomy tube",0
+"PER NG TUBE","NGT","Instillation, nasogastric tube",0
+"Per NG tube","NGT","Instillation, nasogastric tube",0
+"PER PHARM","UNK","Unknown",0
+"PER TUBE","GT","Instillation, gastrostomy tube",0
+"PER_TUBE","GT","Instillation, gastrostomy tube",0
+"PERF","UNK","Unknown",0
+"PERIPH IV","IV","Infusion, intravenous",0
+"PERITONEAL C","IPERINJ","Injection, intraperitoneal",0
+"Peritoneal catheter","IPERINJ","Injection, intraperitoneal",0
+"PG","GT","Instillation, gastrostomy tube",0
+"PGT","GT","Instillation, gastrostomy tube",0
+"PGtube","GT","Instillation, gastrostomy tube",0
+"PL","UNK","Unknown",0
+"PO","PO","Swallow, oral",0
+"PO (oral)","PO","Swallow, oral",0
+"PO (oral)                                                                                           ","PO","Swallow, oral",0
+"PO or NG","PO","Swallow, oral",0
+"PO OR NGT","PO","Swallow, oral",0
+"PO*","PO","Swallow, oral",0
+"PO/NG","PO","Swallow, oral",0
+"PO/PEG","PO","Swallow, oral",0
+"PO/PT","PO","Swallow, oral",0
+"PO/SL","PO","Swallow, oral",0
+"PO/TF","PO","Swallow, oral",0
+"PO/TUBE","PO","Swallow, oral",0
+"POPT","UNK","Unknown",0
+"PORT","UNK","Unknown",0
+"POTU","UNK","Unknown",0
+"PR","PR","Insertion, rectal",0
+"PT","UNK","Unknown",0
+"PV","VAGINSI","Insertion, vaginal",0
+"R","PR","Insertion, rectal",0
+"RC","PR","Insertion, rectal",0
+"RCTL","PR","Insertion, rectal",0
+"RE","PR","Insertion, rectal",0
+"REC","PR","Insertion, rectal",0
+"Rect","PR","Insertion, rectal",0
+"RECT","PR","Insertion, rectal",0
+"RECTAL","PR","Insertion, rectal",0
+"Rectal","PR","Insertion, rectal",0
+"RECTAL ENEMA","ENEMA","Enema, rectal",0
+"RECTALLY","RECINSTL","Instillation, rectal",0
+"RIGHT EYE","OPTHALTA","Topical application, ophthalmic",0
+"Right Eye","OPTHALTA","Topical application, ophthalmic",0
+"Route","UNK","Unknown",0
+"RTL","PR","Insertion, rectal",0
+"SEE CHART","UNK","Unknown",0
+"See Instruct","UNK","Unknown",0
+"SEE_NOTES","UNK","Unknown",0
+"SL","SL","Dissolve, sublingual",0
+"Soak","SOAK","Immersion (soak)",0
+"SQ","SQ","Injection, subcutaneous",0
+"SUB-Q","SQ","Injection, subcutaneous",0
+"Subcutaneous (injection)                                                                            ","SQ","Injection, subcutaneous",0
+"SubQ","SQ","Injection, subcutaneous",0
+"Surgical Site","UNK","Unknown",0
+"SYR","UNK","Unknown",0
+"SYRINGE PUMP","UNK","Unknown",0
+"TF","EFT","Instillation, enteral feeding tube",0
+"TOP","TOPICAL","Topical",0
+"Top","TOPICAL","Topical",0
+"TOPICAL","TOPICAL","Topical",0
+"Topical","TOPICAL","Topical",0
+"TOPICALLY","TOPICAL","Topical",0
+"TOPL","TOPICAL","Topical",0
+"TP","TOPICAL","Topical",0
+"TUBE","EFT","Instillation, enteral feeding tube",1
+"Tube","EFT","Instillation, enteral feeding tube",1
+"UNK","UNK","Unknown",0
+"UNKNOWN","UNK","Unknown",0
+"URO","BLADINSTL","Instillation, urinary catheter",0
+"Urth","URETHINSTL","instillation, urethral",0
+"VAG","VAGINS","Topical application, vaginal",0
+"VE","UNK","Unknown",0
+"VIA_TUBE","EFT","Instillation, enteral feeding tube",1
+"VT","EFT","Instillation, enteral feeding tube",1
+"X","UNK","Unknown",0
+"XX","UNK","Unknown",0
+"Y-MISC-CHARGE","UNK","Unknown",0
+"ZPYXVEND","UNK","Unknown",0
+"zz","UNK","Unknown",0
