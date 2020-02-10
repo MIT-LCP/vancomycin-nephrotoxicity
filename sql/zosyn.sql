@@ -17,21 +17,14 @@ SELECT
   map.classification,
   dosage
 FROM medication m
-LEFT JOIN vanco.medication_frequency_map map
-  on m.frequency = map.frequency
+INNER JOIN vanco.abx_route ro
+  on m.routeadmin = ro.routeadmin
 WHERE 
   (drughiclseqno IN (8738, 32900, 33427) OR lower(drugname) like '%zosyn%' OR lower(drugname) like '%piperacillin%tazo%')
-AND routeadmin IN (
-  'IV', 
-  'Intravenous', 
-  'INTRAVENOU', 
-  'INTRAVEN', 
-  'IntraVENOUS', 
-  'IV (intravenous)                                                                                    ', 
-  'INTRAVENOUS',
-  'IV - brief infusion (intravenous)                                                                   ',
-  'PERIPH IV',
-  'IV Push'
+-- only IV administrations
+AND ro.code IN
+(
+  'IV', 'IVCC', 'IVCI', 'IVINJ', 'IVINJBOL', 'IVPB', 'IVPUSH'
 )
 AND drugordercancelled = 'No'
 AND prn = 'No'
