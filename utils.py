@@ -20,6 +20,8 @@ TABLES = OrderedDict(
         ['vanco', 'vanco.vanco'],
         ['zosyn', 'vanco.zosyn'],
         ['cefepime', 'vanco.cefepime'],
+        ['linezolid', 'vanco.linezolid'],
+        ['meropenem', 'vanco.meropenem'],
         # confounders
         ['apache', 'vanco.apache'],
         ['sepsis_infection', 'vanco.sepsis_infection']
