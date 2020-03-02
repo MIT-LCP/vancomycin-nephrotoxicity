@@ -156,13 +156,32 @@ def prepare_dataframe(co, dem, aki, apache, dx, drug_dfs=None):
         dem, how='inner', on='patientunitstayid'
     )
 
-    aki_grp = aki.groupby('patientunitstayid')[[
-        'creatinine', 'creatinine_baseline', 'aki_48h', 'aki_7d'
-    ]].max()
-    aki_grp.reset_index(inplace=True)
-    df = df.merge(aki_grp, how='inner', on='patientunitstayid')
+    # sory data so that the AKI rows occur first for each pt
+    aki = aki.sort_values(
+        ['patientunitstayid', 'aki', 'chartoffset'],
+        ascending=[True, False, True]
+    )
 
-    df['aki'] = ((df['aki_48h'] == 1) | (df['aki_7d'] == 1)).astype(int)
+    # groupby.first() will be equal to the first instance of AKI
+    aki_grp = aki.groupby('patientunitstayid')[[
+        'creatinine', 'chartoffset', 'creatinine_baseline', 'aki_48h', 'aki_7d',
+        'aki'
+    ]].first()
+
+    aki_grp.rename(
+        columns={
+            'chartoffset': 'chartoffset_aki',
+            'creatinine': 'creatinine_aki'
+        },
+        inplace=True
+    )
+
+    aki_grp.reset_index(inplace=True)
+
+    df = df.merge(aki_grp, how='left', on='patientunitstayid')
+    # we should have creatinine measured for everyone
+    assert df['creatinine_aki'].isnull().sum() == 0
+
     logger.info(
         (
             f'{df["aki"].sum()} ({df["aki"].mean()*100.0:3.1f}%)'
@@ -242,7 +261,7 @@ def prepare_dataframe(co, dem, aki, apache, dx, drug_dfs=None):
                 df[c].fillna(0, inplace=True)
                 df[c] = df[c].astype(int)
 
-            # simplify one column as the logical AND of the two
+            # create one simplified column as the logical AND of the two
             drug_cols = ddf.columns
             drug_name = [c.split('_')[0] for c in ddf.columns]
             assert drug_name[0] == drug_name[1]
@@ -250,7 +269,6 @@ def prepare_dataframe(co, dem, aki, apache, dx, drug_dfs=None):
 
             df[drug_name] = (df[drug_cols[0]] == 1) & (df[drug_cols[1]] == 1)
             df[drug_name] = df[drug_name].astype(int)
-            df.drop(drug_cols, axis=1, inplace=True)
 
     # set patientunitstayid as index
     df.set_index('patientunitstayid', inplace=True)
@@ -546,7 +564,10 @@ def propensity_match(
         'immunocompromised'
     ],
     outcome_var='aki',
-    seed=389202
+    seed=389202,
+    balance=False,
+    n_models=100,
+    verbose=False
 ):
 
     np.random.seed(seed)
@@ -609,18 +630,27 @@ def propensity_match(
 
     # predict the y outcome balancing the classes
     # repeat 100 times to be sure we use a lot of majority class data
-    m.fit_scores(balance=False)
+    if balance:
+        m.fit_scores(balance=balance, nmodels=n_models)
+    else:
+        m.fit_scores(balance=False)
+
     m.predict_scores()
 
-    # m.plot_scores()
+    if verbose:
+        m.plot_scores()
 
     # m.tune_threshold(method='random')
     m.match(method="min", nmatches=1, threshold=0.0005)
     # m.record_frequency()
 
     # no categorical variables -> this errors
-    # cc = m.compare_continuous(return_table=True)
-    # display(cc)
+    if verbose:
+        cc = m.compare_categorical(return_table=True)
+        display(cc)
+        cc = m.compare_continuous(return_table=True)
+        display(cc)
+
     return m
 
 
