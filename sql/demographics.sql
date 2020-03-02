@@ -43,31 +43,62 @@ demographics AS (
         WHEN p.admissionHeight >90 AND p.admissionHeight < 300 THEN (10000*w.weight_avg/(p.admissionHeight*p.admissionHeight))
         ELSE NULL 
      END) AS BMI,
-    p.unitDischargeOffset,
+
+    -- patient hospital stay features
+    -- hospital length of stay in days
+    (hospitaldischargeoffset - hospitaladmitoffset) / 60.0 as hospital_los_hours,
+
+    -- hospital size
+    -- hospital type
+    hospitaladmitsource as hospital_admit_source,
+    case -- discharge disposition, stratify by ...
+        -- home
+        when hospitaldischargelocation = 'Home' then 'Home'
+        -- discharge to other acute care hospital
+        when hospitaldischargelocation = 'Other Hospital' then 'OtherHospital'
+
+        -- discharge to skilled nursing facility
+        when hospitaldischargelocation = 'Skilled Nursing Facility' then 'SNF'
+
+        -- discharge to rehabilitation or chronic care facility
+        when hospitaldischargelocation in ('Rehabilitation', 'Nursing Home') then 'NursingHome'
+
+
+        -- cases not specified in document
+        when hospitaldischargelocation = 'Other External' then 'OtherExternal'
+        when hospitaldischargelocation = 'Other' then 'Other'
+        when hospitaldischargelocation = 'Death' then 'Death'
+
+        when length(hospitaldischargelocation)<=1 then null
+      else null end as hospital_disch_location,
+
+    case -- dead/alive
+        when hospitaldischargestatus = 'Expired' then 1
+        when hospitaldischargestatus = 'Alive' then 0
+      else null end as hospital_mortality,
+
+  -- unit admission is the reference for offsets, so no subtraction needed
+    unitdischargeoffset / 60.0 as icu_los_hours,
+    unitdischargeoffset,
     apache.apacheScore,
+    h.region,
+    h.teachingstatus,
+    h.numbedscategory,
     apache.apache_group
   FROM patient p
+  LEFT JOIN hospital h ON p.hospitalid = h.hospitalid
   LEFT JOIN vanco.weight w ON w.patientunitstayid = p.patientUnitStayID 
   LEFT JOIN apache ON p.patientUnitStayID = apache.patientUnitStayID
   ORDER BY p.patientUnitStayID  
 )
 -- categorize BMI values into categories
 SELECT 
-  patientunitstayid,
-  unitdischargeoffset,
-  age,
-  gender,
-  ethnicity,
-  weight_avg AS weight,
-  height,
-  BMI,
+  d.*,
   CASE 
     WHEN BMI < 18 THEN 'underweight' 
     WHEN BMI >= 18 AND BMI < 25 THEN 'normal'
     WHEN BMI >= 25 THEN 'overweight' 
     WHEN BMI >= 30 THEN 'obese'
     ELSE NULL 
-  END AS BMI_group,
-  apachescore,
-  apache_group
-FROM demographics;
+  END AS BMI_group
+FROM demographics d;
