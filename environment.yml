@@ -1,0 +1,22 @@
+name: vanco
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - autopep8==1.4.3
+  - flake8==3.6.0
+  - ipykernel==5.1.1
+  - ipython==7.7.0
+  - jupyter-client==5.3.1
+  - jupyter-console==6.0.0
+  - jupyter-core==4.5.0
+  - pylint==2.3.1
+  - tqdm==4.32.1
+  - xlrd==1.2.0
+  - scipy=1.2
+  - pandas=0.23.4
+  - numpy=1.15.4
+  - pymatch=0.3.4
+  - statsmodels=0.10.1
+  - seaborn=0.9.0
+  - lifelines
