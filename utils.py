@@ -247,6 +247,7 @@ def prepare_dataframe(co, dem, aki, apache, dx, drug_dfs=None):
     idxFemale = df['gender'] == 'Female'
     df.loc[idxFemale, 'egfr'] = df.loc[idxFemale, 'egfr'] * 0.742
     idxBlack = df['ethnicity'] == 'African American'
+    idxBlack.fillna(False, inplace=True)
     df.loc[idxBlack, 'egfr'] = df.loc[idxBlack, 'egfr'] * 1.212
 
     # finally, add the drug dataframes
@@ -608,7 +609,7 @@ def propensity_match(
             mu = pd.concat([exposure[c], control[c]], axis=0).mean()
 
         n = exposure[c].isnull().sum()
-        if n > 0:
+        if (n > 0) & (c not in cols_exclude):
             logger.warning(
                 f'Column {c} missing {n} observations in exposure dataframe.'
             )
@@ -618,7 +619,7 @@ def propensity_match(
             logger.warning(f'Did not find column {c} in control dataframe.')
         else:
             n = control[c].isnull().sum()
-            if n > 0:
+            if (n > 0) & (c not in cols_exclude):
                 logger.warning(
                     f'Column {c} missing {n} observations in control dataframe.'
                 )
