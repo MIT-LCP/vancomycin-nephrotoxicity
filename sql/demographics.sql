@@ -33,6 +33,8 @@ demographics AS (
     p.patientUnitStayID, 
     p.age, 
     p.gender,
+    p.hospitalid,
+    p.hospitaldischargeyear,
     CASE WHEN p.ethnicity = '' THEN NULL ELSE p.ethnicity END AS ethnicity,
     w.weight_avg,
     (CASE 
