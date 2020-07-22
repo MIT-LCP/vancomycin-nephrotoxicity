@@ -3,6 +3,22 @@
 The SQL files in this folder perform all data extraction from eICU-CRD.
 You can read more about [eICU-CRD at the documentation website](https://eicu-crd.mit.edu).
 
+
+## Tables used
+
+* apacheapsvar
+* apachepatientresult
+* careplangeneral
+* diagnosis
+* intakeoutput
+* infusiondrug
+* lab
+* medication
+* nursecharting
+* patient
+* pasthistory
+* treatment
+
 ## GCP queries
 
 eICU-CRD has been loaded into Google BigQuery and is available via the `physionet-data.eicu_crd` schema for those who have correct permissions.
