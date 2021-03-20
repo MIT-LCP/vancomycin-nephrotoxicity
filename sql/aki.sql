@@ -30,22 +30,22 @@ SELECT
     AND cr1.chartoffset >= cr2.chartoffset
     AND cr1.chartoffset <= (cr2.chartoffset + 2880) -- last 48 hours
   WHERE cr1.chartoffset BETWEEN (12*60) AND (24*60*7) -- only looks at Cr values from 12h - 7 days after admission
-), 
--- Dialysis as defined in the treatment table
-dialysis_tr as
+)
+, dialysis as
 (
     -- captures 7,985 stays
+    -- Dialysis as defined in the treatment table
     SELECT 
       patientunitstayid, treatmentoffset as chartoffset
     FROM treatment t
     WHERE lower(treatmentstring) like '%dialysis%'
     OR lower(treatmentstring) like '%rrt%'
     OR lower(treatmentstring) like '%ihd%'
-)
--- Dialysis as defined in the care plan table
-, cpl as
-(
+
+  UNION DISTINCT 
+
     -- captures 14,330 stays
+    -- Dialysis as defined in the care plan table
     SELECT
       patientunitstayid, cplitemoffset as chartoffset
     FROM careplangeneral c
@@ -56,6 +56,15 @@ dialysis_tr as
         , 'Hypervolemic - gently diurese' -- 9202
     )
 )
+-- patients receiving dialysis after admission
+, dialysis_all as 
+( SELECT 
+    patientunitstayid, MIN(chartoffset) AS rrt_offset
+  FROM dialysis
+  WHERE (chartoffset > 12*60.) AND (chartoffset <= 7*24*60.) -- after admission - 7days, where admission = (-12, 12h)
+  GROUP BY patientunitstayid
+),
+ 
 SELECT
   c.patientunitstayid
   , c.chartoffset
@@ -64,20 +73,28 @@ SELECT
   , c.chartoffset_reference
   , cr0_tb.chartoffset_baseline
   , cr0_tb.creatinine_baseline
+  , CASE 
+      WHEN dialysis.rrt_offset IS NULL THEN 0
+      ELSE 1
+    END AS rrt 
   -- AKI is defined by the sudden (in 48 h) increase in absolute SCr by at least 0.3 mg/dL
-  , CASE WHEN (c.creatinine - creatinine_reference) >= 0.3 THEN 1 ELSE 0 END as aki_48h
+  , CASE WHEN (c.creatinine - creatinine_reference) >= 0.3 THEN 1 ELSE 0 END AS aki_48h
   -- AKI also defined by a percentage increase in SCr ≥50% (1.5× baseline value)
-  , CASE WHEN (c.creatinine / creatinine_baseline) >= 1.5 THEN 1 ELSE 0 END as aki_7d
+  , CASE WHEN (c.creatinine / creatinine_baseline) >= 1.5 THEN 1 ELSE 0 END AS aki_7d
   , CASE 
     WHEN (c.creatinine / creatinine_baseline) >= 3.0 THEN 3
     WHEN (c.creatinine >= 4.0) THEN 3 
-    -- initiation of RRT 
-    -- in pts < 18yo, decrease in eGFR 
-    WHEN (c.creatinine / creatinine_baseline >= 2.0) AND (c.creatinine / creatinine_baseline < 3.0) THEN 2 
-    WHEN (c.creatinine / creatinine_baseline >= 1.5) AND (c.creatinine / creatinine_baseline < 2.0) THEN 1 
-    WHEN (c.creatinine - creatinine_reference) >= 0.3 THEN 1
+    WHEN (dialysis.rrt_offset IS NOT NULL) THEN 3
+    WHEN ((c.creatinine / creatinine_baseline) >= 2.0) THEN 2 
+    WHEN ((c.creatinine / creatinine_baseline) >= 1.5) THEN 1 
+    WHEN ((c.creatinine - creatinine_reference) >= 0.3) THEN 1
+    ELSE 0
+  END AS stage 
+
 FROM (SELECT * FROM cr_rel WHERE rn = 1) c
 LEFT JOIN cr0_tb
   on c.patientunitstayid = cr0_tb.patientunitstayid
   AND cr0_tb.rn = 1
+LEFT JOIN dialysis 
+  on c.patientunitstayid = dialysis.patientunitstayid
 ORDER BY c.patientunitstayid, c.chartoffset
