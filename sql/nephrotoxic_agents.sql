@@ -1,8 +1,10 @@
+DROP TABLE IF EXISTS vanco.nephrotoxic_agents;
+CREATE TABLE vanco.nephrotoxic_agents AS
 WITH contrast AS (
 	SELECT 
 		patientunitstayid
 		, MIN(treatmentoffset) AS contrastoffset
-	FROM `physionet-data.eicu_crd.treatment` trt
+	FROM treatment trt
 	WHERE treatmentstring IN (
 	'pulmonary|radiologic procedures / bronchoscopy|CT scan|with contrast'
 	, 'gastrointestinal|radiology, diagnostic and procedures|CT scan|with IV contrast'
@@ -18,7 +20,7 @@ WITH contrast AS (
 	SELECT 
 		patientunitstayid
 		, MIN(drugstartoffset) AS nsaidoffset
-	FROM `physionet-data.eicu_crd.medication` med 
+	FROM medication med 
 	WHERE (drughiclseqno IN (1820, 3723, 5175) 
     OR LOWER(drugname) LIKE '%aspirin%' 
     OR LOWER(drugname) LIKE '%ibuprofen%' 
@@ -34,7 +36,7 @@ WITH contrast AS (
 	SELECT 
 		patientunitstayid
 		, MIN(drugstartoffset) AS calcioffset
-	FROM `physionet-data.eicu_crd.medication` med 
+	FROM medication med 
 	WHERE (LOWER(drugname) LIKE '%tacrolimus%'
     OR drughiclseqno = 20974 
     OR drughiclseqno = 8974)
@@ -45,7 +47,7 @@ WITH contrast AS (
 	SELECT 
 		patientunitstayid
 		, MIN(drugstartoffset) AS pressoroffset 
-	FROM `physionet-data.eicu_crd.medication` med 
+	FROM medication med 
 	WHERE drughiclseqno IN (2050, 2051, 2059, 2060, 2087, 2839, 34361, 35517, 35587, 36346, 36437) 
     OR LOWER(drugname) LIKE '%norepinephrine%' 
     OR LOWER(drugname) LIKE '%epinephrine%'
