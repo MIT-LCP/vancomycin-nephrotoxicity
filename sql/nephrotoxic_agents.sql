@@ -46,11 +46,15 @@ WITH contrast AS (
 		patientunitstayid
 		, MIN(drugstartoffset) AS pressoroffset 
 	FROM `physionet-data.eicu_crd.medication` med 
-	WHERE (drughiclseqno IN (2050, 2051, 2059, 2060, 2087, 34361, 35517, 35587, 36346, 36437) 
+	WHERE drughiclseqno IN (2050, 2051, 2059, 2060, 2087, 2839, 34361, 35517, 35587, 36346, 36437) 
     OR LOWER(drugname) LIKE '%norepinephrine%' 
     OR LOWER(drugname) LIKE '%epinephrine%'
     OR LOWER(drugname) LIKE '%dopamine%'
-    OR LOWER(drugname) LIKE '%phenylephrine%')
+    OR LOWER(drugname) LIKE '%phenylephrine%'
+    OR LOWER(drugname) LIKE '%vasopressin%'
+    OR LOWER(drugname) LIKE '%levophed%'
+    OR LOWER(drugname) LIKE '%synephrine%'
+    OR LOWER(drugname) LIKE '%dobutamine%'
     AND (drugstartoffset BETWEEN (-12*60.) AND (7*24*60.))
     GROUP BY patientunitstayid
 )
