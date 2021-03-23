@@ -42,7 +42,7 @@ SELECT
     OR lower(treatmentstring) like '%rrt%'
     OR lower(treatmentstring) like '%ihd%'
 
-  UNION DISTINCT 
+    UNION DISTINCT
 
     -- captures 14,330 stays
     -- Dialysis as defined in the care plan table
@@ -63,8 +63,7 @@ SELECT
   FROM dialysis
   WHERE (chartoffset > 12*60.) AND (chartoffset <= 7*24*60.) -- after admission - 7days, where admission = (-12, 12h)
   GROUP BY patientunitstayid
-),
- 
+) 
 SELECT
   c.patientunitstayid
   , c.chartoffset
@@ -73,9 +72,9 @@ SELECT
   , c.chartoffset_reference
   , cr0_tb.chartoffset_baseline
   , cr0_tb.creatinine_baseline
-  , dialysis.rrt_offset
+  , d.rrt_offset
   , CASE 
-      WHEN dialysis.rrt_offset IS NULL THEN 0
+      WHEN d.rrt_offset IS NULL THEN 0
       ELSE 1
     END AS rrt 
   -- AKI is defined by the sudden (in 48 h) increase in absolute SCr by at least 0.3 mg/dL
@@ -85,7 +84,7 @@ SELECT
   , CASE 
     WHEN (c.creatinine / creatinine_baseline) >= 3.0 THEN 3
     WHEN (c.creatinine >= 4.0) THEN 3 
-    WHEN (dialysis.rrt_offset IS NOT NULL) THEN 3
+    WHEN (d.rrt_offset IS NOT NULL) THEN 3
     WHEN ((c.creatinine / creatinine_baseline) >= 2.0) THEN 2 
     WHEN ((c.creatinine / creatinine_baseline) >= 1.5) THEN 1 
     WHEN ((c.creatinine - creatinine_reference) >= 0.3) THEN 1
@@ -96,6 +95,6 @@ FROM (SELECT * FROM cr_rel WHERE rn = 1) c
 LEFT JOIN cr0_tb
   on c.patientunitstayid = cr0_tb.patientunitstayid
   AND cr0_tb.rn = 1
-LEFT JOIN dialysis 
-  on c.patientunitstayid = dialysis.patientunitstayid
+LEFT JOIN dialysis_all d
+  on c.patientunitstayid = d.patientunitstayid
 ORDER BY c.patientunitstayid, c.chartoffset
