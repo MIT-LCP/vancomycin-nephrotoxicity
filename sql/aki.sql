@@ -73,6 +73,7 @@ SELECT
   , c.chartoffset_reference
   , cr0_tb.chartoffset_baseline
   , cr0_tb.creatinine_baseline
+  , dialysis.rrt_offset
   , CASE 
       WHEN dialysis.rrt_offset IS NULL THEN 0
       ELSE 1
