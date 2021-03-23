@@ -59,12 +59,14 @@ SELECT
         ELSE 0 END
     ) AS chronic_dialysis
 FROM patient pt
+-- dialysis between -12h to 12h upon admission
 LEFT JOIN tr
   ON pt.patientunitstayid = tr.patientunitstayid
-  AND tr.chartoffset >= 0 and tr.chartoffset <= 10080
+  AND tr.chartoffset >= -12*60. and tr.chartoffset <= 12*60.
 LEFT JOIN cpl
   ON pt.patientunitstayid = cpl.patientunitstayid
-  AND cpl.chartoffset >= 0 and cpl.chartoffset <= 10080
+  AND cpl.chartoffset >= -12*60. and cpl.chartoffset <= 12*60.
+-- chronic dialysis for 7 days  
 LEFT JOIN ph
   ON pt.patientunitstayid = ph.patientunitstayid
   AND ph.chartoffset >= 0 and ph.chartoffset <= 10080
