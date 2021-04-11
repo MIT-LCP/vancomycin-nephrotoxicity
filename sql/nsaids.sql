@@ -21,8 +21,26 @@ SELECT
       (drughiclseqno = 3723 OR lower(drugname) like '%ibuprofen%' OR lower(drugname) like '%motrin%')
         THEN 'ibuprofen'
     WHEN
-      (drughiclseqno = 5175 OR lower(drugname) like '%toradol%' OR lower(drugname) like '%ketorolac%')
-        THEN 'toradol'
+      (drughiclseqno IN (3733, 20420) OR lower(drugname) like '%diclofenac%' OR lower(drugname) like '%voltaren%')
+        THEN 'diclofenac'
+    WHEN
+      (drughiclseqno IN (5175) OR lower(drugname) like '%ketorolac%' OR lower(drugname) like '%acular%' OR lower(drugname) like '%toradol%')
+        THEN 'ketorolac'
+    WHEN
+      (drughiclseqno IN (18979) OR lower(drugname) like '%celecoxib%' OR lower(drugname) like '%celebrex%')
+        THEN 'celecoxib'
+    WHEN
+      (drughiclseqno IN (3719) OR lower(drugname) like '%indomethacin%' OR lower(drugname) like '%indocin%')
+        THEN 'indomethacin'
+    WHEN
+      (drughiclseqno IN (3727) OR lower(drugname) like '%naproxen%' OR lower(drugname) like '%naprosyn%')
+        THEN 'naproxen'
+    WHEN
+      (drughiclseqno IN (12181) OR lower(drugname) like '%meloxicam%' OR lower(drugname) like '%mobic%')
+        THEN 'meloxicam'
+    WHEN
+      (drughiclseqno IN (3732) OR lower(drugname) like '%piroxicam%' OR lower(drugname) like '%feldene%')
+        THEN 'piroxicam'
   ELSE NULL END AS drug,
   m.frequency,
   map.classification,
@@ -30,15 +48,24 @@ SELECT
 FROM medication m
 LEFT JOIN vanco.medication_frequency_map map
   on m.frequency = map.frequency
-WHERE 
-  -- aspirin
+WHERE -- aspirin
   (drughiclseqno = 1820 OR lower(drugname) like '%aspirin%' OR lower(drugname) like '%ecotrin%')
-OR
-  -- ibuprofen
+OR -- ibuprofen
   (drughiclseqno = 3723 OR lower(drugname) like '%ibuprofen%' OR lower(drugname) like '%motrin%')
-OR
-  -- toradol
-  (drughiclseqno = 5175 OR lower(drugname) like '%toradol%' OR lower(drugname) like '%ketorolac%')
+OR -- toradol
+  (drughiclseqno IN (5175) OR lower(drugname) like '%ketorolac%' OR lower(drugname) like '%acular%' OR lower(drugname) like '%toradol%')
+OR -- diclofenac
+  (drughiclseqno IN (3733, 20420) OR lower(drugname) like '%diclofenac%' OR lower(drugname) like '%voltaren%')
+OR -- celecoxib
+  (drughiclseqno IN (18979) OR lower(drugname) like '%celecoxib%' OR lower(drugname) like '%celebrex%')
+OR -- indomethacin
+  (drughiclseqno IN (3719) OR lower(drugname) like '%indomethacin%' OR lower(drugname) like '%indocin%')
+OR -- naproxen
+  (drughiclseqno IN (3727) OR lower(drugname) like '%naproxen%' OR lower(drugname) like '%naprosyn%')
+OR -- meloxicam
+  (drughiclseqno IN (12181) OR lower(drugname) like '%meloxicam%' OR lower(drugname) like '%mobic%')
+OR -- piroxicam
+  (drughiclseqno IN (3732) OR lower(drugname) like '%piroxicam%' OR lower(drugname) like '%feldene%')
 AND drugordercancelled = 'No'
 AND prn = 'No'
 AND COALESCE(map.classification, '') NOT IN ('prn')
