@@ -138,7 +138,7 @@ def extract_adm_and_wk(d, drugname='vanco', indefinite_orders=True):
     return d_df
 
 
-def prepare_dataframe(co, dem, aki, apache, dx, drug_dfs=None):
+def prepare_dataframe(co, dem, aki, neph, apache, dx, drug_dfs=None):
     # drop exclusions
     idxKeep = co['patientunitstayid'].notnull()
     for c in co.columns:
@@ -165,7 +165,7 @@ def prepare_dataframe(co, dem, aki, apache, dx, drug_dfs=None):
     # groupby.first() will be equal to the first instance of AKI
     aki_grp = aki.groupby('patientunitstayid')[[
         'creatinine', 'chartoffset', 'creatinine_baseline', 'aki_48h', 'aki_7d',
-        'aki'
+        'aki', 'stage'
     ]].first()
 
     aki_grp.rename(
@@ -188,7 +188,12 @@ def prepare_dataframe(co, dem, aki, apache, dx, drug_dfs=None):
             f' patients have AKI.'
         )
     )
-
+    
+    # add in nephrotoxic exposure data
+    df = df.merge(neph, how='left', on='patientunitstayid')
+    # Manually set pts without nephrotoxic agent exposure to 0. 
+    df['nephrotoxic_exp'] = df['nephrotoxic_exp'].fillna('0')
+    
     # add in apache/diagnosis data
     apache_columns = ['patientunitstayid', 'apache_prob', 'immunocompromised']
     df = df.merge(apache[apache_columns], how='left', on='patientunitstayid')
@@ -642,7 +647,7 @@ def propensity_match(
         m.plot_scores()
 
     # m.tune_threshold(method='random')
-    m.match(method="min", nmatches=1, threshold=0.0005)
+    m.match(method="min", nmatches=1, threshold=0.0005) # finds the closest match for each minority record
     # m.record_frequency()
 
     # no categorical variables -> this errors
@@ -691,7 +696,7 @@ def get_contingency_tables(m, outcome_var='aki'):
 
     # group them by the strata
     df_grouped = df_matched.groupby(
-        ['record_id_minority', 'aki_minority', 'aki_majority']
+        ['record_id_minority', f'{outcome_var}_minority', f'{outcome_var}_majority']
     )[['match_id']].count()
     df_grouped = df_grouped.reset_index()
 
@@ -737,3 +742,109 @@ def get_contingency_tables(m, outcome_var='aki'):
     cm[i, j, k] = 1
 
     return cm
+
+def consolidate_neph_exp(ag, amp, av, cn, ld, ns, vp, neph):
+    # Merge all drugs together
+    neph_cols = ['patientunitstayid', 'drugstartoffset', 'route_code']
+    frames = [ag[neph_cols], amp[neph_cols], av[neph_cols], cn[neph_cols], ld[neph_cols], ns[neph_cols], vp[neph_cols]]
+    neph2 = pd.concat(frames)
+    # Check for nephrotoxic exposure in the first week of admission
+    neph2 = neph2[(neph2['drugstartoffset'] >= (-12*60.)) & (neph2['drugstartoffset'] >= (7*24*60.))]
+
+    # Exclude non-systemic routes. All routes up to this point are included and nonsystemic routes are commented out.
+    # Systemic routes defined as: 
+    #     IV/IM, Oral (tubes), intraarticular, intraperitoneal, intrathecal, intracath, implants, intradermal, SQ
+    systemic_routes = [
+        'IV',
+        'PO',
+        'IVPUSH',
+    #     'UNK',
+        'IVPB',
+        'GT',
+        'NGT',
+        'IV (injection)',
+        'EFT',
+        'IVINJ',
+    #     'PR',
+        'IM',
+    #     'ORINHL',
+    #     'TOPICAL',
+    #     'NEB',
+    #     'OPTHALTA',
+        'PO (oral)',
+        'SL', # not sure
+        'SQ',
+        'JJTINSTL',
+        'IV (intravenous)',
+        'IDINJ',
+    #     'NASALINSTIL',
+    #     'IRRIG',
+        'OGT',
+        'Per enteric tube (oral)',
+    #     'RECINSTL',
+        'IV - continuous infusion (intravenous)',
+    #     'CHEW',
+        'IV - continuous infusion (injection)',
+    #     'ICORONINJ', # not sure
+        'IV - brief infusion (injection)',
+        'IVCC',
+    #     'INFIL',
+        'ITINJ',
+    #     'Per rectum (rectal)',
+    #     'NONE',
+        'IVCI',
+    #     'Inhaled (inhalation)',
+    #     'Topical (topical)',
+        'IV - brief infusion (intravenous)',
+        'ED',
+        'IPERINJ',
+    #     'BLADINSTL',
+        'PO',
+    #     'ETT', # not sure
+        'TD',
+    #     'Miscellaneous (medical supplies non-drugs) (Miscellaneous)',
+        'IM (injection)',
+    #     'ILESINJ', # not sure
+    #     'ITRACHINSTIL', # not sure
+        'IA',
+        'IV',
+    #     'Intranasal (nasal)',
+        'Intrathecal (injection)',
+        'IARTINJ',
+    #     'OTIC',
+        'IOINJ',
+        'Subcutaneous (injection)',
+        'IDUODINSTIL',
+        'IOSSINJ',
+    #     'ICARDINJ',
+    #     'Opthalmic (opthalmic)',
+    #     'IVITINJ',
+    #     'SWAB',
+        'PDPINSTL',
+    #     'VAGINS',
+    #     'Submucosal',
+        'Shunt', # not sure.. is this dialysis?
+    #     'IUINJ',
+    #     'ENEMA',
+    #     'IVENTINJ',
+    #     'TB', # not sure what this is
+    #     'Per rectum',
+    #     'IBRONCHINSTIL', # not sure
+        'HEMODIFF',
+    #     'INVITRO', # not sure what this is 
+    ]
+    neph2 = neph2[neph2['route_code'].isin(systemic_routes)]
+    # Assign nephrotoxic exposure
+    neph2['nephrotoxic_exp'] = '1'
+    
+    # Convert to string to assert as a categorical var
+    neph['nephrotoxic_exp'] = neph['nephrotoxic_exp'].astype(str) 
+
+    # Merge with original nephrotoxic exposure table
+    neph_col2 = ['patientunitstayid', 'nephrotoxic_exp']
+    neph_all = pd.concat([neph2[neph_col2], neph[neph_col2]])
+
+    # Drop patient duplicates 
+    neph_all.drop_duplicates(inplace=True)
+    return neph_all
+    
