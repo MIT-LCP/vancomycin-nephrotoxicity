@@ -99,7 +99,7 @@ SELECT
   CASE 
     WHEN BMI < 18 THEN 'underweight' 
     WHEN BMI >= 18 AND BMI < 25 THEN 'normal'
-    WHEN BMI >= 25 THEN 'overweight' 
+    WHEN BMI >= 25 AND BMI < 30 THEN 'overweight' 
     WHEN BMI >= 30 THEN 'obese'
     ELSE NULL 
   END AS BMI_group
