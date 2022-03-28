@@ -748,8 +748,8 @@ def consolidate_neph_exp(ag, amp, av, cn, ld, ns, vp, neph):
     neph_cols = ['patientunitstayid', 'drugstartoffset', 'route_code']
     frames = [ag[neph_cols], amp[neph_cols], av[neph_cols], cn[neph_cols], ld[neph_cols], ns[neph_cols], vp[neph_cols]]
     neph2 = pd.concat(frames)
-    # Check for nephrotoxic exposure in the first week of admission
-    neph2 = neph2[(neph2['drugstartoffset'] >= (-12*60.)) & (neph2['drugstartoffset'] >= (7*24*60.))]
+    # Check for nephrotoxic exposure at the start of admission (-12, 12h from ICU admission) 
+    neph2 = neph2[(neph2['drugstartoffset'] >= (-12*60.)) & (neph2['drugstartoffset'] >= (12*60.))]
 
     # Exclude non-systemic routes. All routes up to this point are included and nonsystemic routes are commented out.
     # Systemic routes defined as: 
