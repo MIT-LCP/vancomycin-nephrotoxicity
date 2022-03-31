@@ -43,7 +43,7 @@ apachedx AS (
     WHEN apv.admitdiagnosis LIKE 'S-%' THEN 1
     ELSE 0
     END AS surgdx
-  FROM apachepredvar
+  FROM apachepredvar apv
 ),
 demographics AS (
   SELECT 
