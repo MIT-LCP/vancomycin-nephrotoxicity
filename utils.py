@@ -246,7 +246,27 @@ def prepare_dataframe(co, dem, aki, neph, apache, dx, drug_dfs=None):
     df.loc[idx, 'apache_group'] = 'missing'
 
     # add GFR using baseline creatinine
+    # Calculate eGFR from the CKD-EPI creatinine equation (2021)
+    # eGFR = 142 x min(Scr/K, 1)**a x max(Scr/K, 1)**(-1.200) x 0.9938**age x 1.012 [if female]
+    kappa_female = 0.7 
+    kappa_male = 0.9 
+    alpha_female = -0.241
+    alpha_male = -0.302
+
+    idxFemale = df['gender'] == 'Female'
+
+    df.loc[idxFemale, 'egfr'] = 142 * np.power( min(df['creatinine_baseline']/kappa_female, 1)
+                                                , alpha_female) * np.power( max(df['creatinine_baseline']/kappa_female, 1)
+                                                                            , -1.200) * np.power(0.9938
+                                                                                                , df['age']) * 1.012 
+    df.loc[~idxFemale, 'egfr'] = 142 * np.power( min(df['creatinine_baseline']/kappa_male, 1)
+                                                , alpha_male) * np.power( max(df['creatinine_baseline']/kappa_male, 1)
+                                                                            , -1.200) * np.power(0.9938
+                                                                                                , df['age']) 
+
+    # Calculates eGFR from the MDRD equation (old)
     # eGFR = 175 x (SCr)^-1.154 x (age)^-0.203 x 0.742 [if female] x 1.212 [if Black]
+    """
     df['egfr'] = 175 * np.power(df['creatinine_baseline'],
                                 -1.154) * np.power(df['age'], -0.203)
     idxFemale = df['gender'] == 'Female'
@@ -254,6 +274,7 @@ def prepare_dataframe(co, dem, aki, neph, apache, dx, drug_dfs=None):
     idxBlack = df['ethnicity'] == 'African American'
     idxBlack.fillna(False, inplace=True)
     df.loc[idxBlack, 'egfr'] = df.loc[idxBlack, 'egfr'] * 1.212
+    """
 
     # finally, add the drug dataframes
     if drug_dfs is not None:
