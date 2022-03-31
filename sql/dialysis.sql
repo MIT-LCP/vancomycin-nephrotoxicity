@@ -40,7 +40,7 @@ with tr as
 (
     -- captures 6309 stays
     SELECT
-      patientunitstayid, 0 as chartoffset
+      patientunitstayid
     FROM apacheapsvar
     WHERE dialysis = 1  
 )
@@ -66,12 +66,13 @@ LEFT JOIN tr
 LEFT JOIN cpl
   ON pt.patientunitstayid = cpl.patientunitstayid
   AND cpl.chartoffset >= -12*60. and cpl.chartoffset <= 12*60.
--- chronic dialysis for 7 days  
+-- documentation of chronic dialysis
+-- we still check for this documentation from -12h to 12h, to prevent info leakage
 LEFT JOIN ph
   ON pt.patientunitstayid = ph.patientunitstayid
-  AND ph.chartoffset >= 0 and ph.chartoffset <= 10080
+  AND ph.chartoffset >= -12*60 and ph.chartoffset <= 12*60
+-- apv only provides documentation on chronic dialysis, 1 row per pt
 LEFT JOIN apv
   ON pt.patientunitstayid = apv.patientunitstayid
-  AND apv.chartoffset >= 0 and apv.chartoffset <= 10080
 GROUP BY pt.patientunitstayid
 ORDER BY pt.patientunitstayid
