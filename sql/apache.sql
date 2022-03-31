@@ -4,8 +4,8 @@ CREATE TABLE vanco.apache AS
 SELECT
   pt.patientunitstayid
   , CASE
-    WHEN apr.predictedhospitalmortality = -1 THEN NULL
-    ELSE apr.predictedhospitalmortality
+    WHEN CAST(apr.predictedhospitalmortality AS NUMERIC) = -1 THEN NULL
+    ELSE CAST(apr.predictedhospitalmortality AS NUMERIC)
   END as apache_prob
   , CASE
     WHEN apv.aids = 1 OR apv.immunosuppression = 1 THEN 1
