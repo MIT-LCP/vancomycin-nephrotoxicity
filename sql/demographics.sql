@@ -103,7 +103,7 @@ demographics AS (
     h.region,
     h.teachingstatus,
     h.numbedscategory,
-    apache.apache_group
+    apache.apache_group,
  -- add admission diagnosis and comorbidities for dem table
     apachedx.admitdiagnosis,
     apachedx.aids,
