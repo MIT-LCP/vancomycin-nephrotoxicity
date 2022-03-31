@@ -107,7 +107,7 @@ SELECT
   , CASE WHEN ap.patientunitstayid IS NULL THEN 1 ELSE 0 END AS exclude_missing_apache
   , ht.exclude_no_med_interface
   , CASE WHEN dt.chronic_dialysis = 1 THEN 1 ELSE 0 END AS exclude_dialysis_chronic
-  , CASE WHEN dt.dialysis = 1 THEN 1 ELSE 0 END AS exclude_dialysis_first_week
+  , CASE WHEN dt.dialysis = 1 THEN 1 ELSE 0 END AS exclude_dialysis_on_admission
   , CASE WHEN cr0.patientunitstayid IS NULL THEN 1 ELSE 0 END AS exclude_cr_missing_baseline
   , CASE WHEN cr7.patientunitstayid IS NULL THEN 1 ELSE 0 END AS exclude_cr_missing_followup
 FROM patient pt
