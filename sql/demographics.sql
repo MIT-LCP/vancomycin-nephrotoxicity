@@ -28,6 +28,23 @@ WITH apache AS(
   FROM apachepatientresult
   WHERE apacheversion = 'IVa'
 ),
+apachedx AS (
+  SELECT 
+    patientUnitStayID,
+    -- add admission diagnoses 
+    apv.admitdiagnosis,
+    apv.aids,
+    apv.hepaticfailure,
+    apv.lymphoma,
+    apv.metastaticcancer,
+    apv.leukemia,
+    apv.cirrhosis,
+    CASE 
+    WHEN apv.admitdiagnosis LIKE 'S-%' THEN 1
+    ELSE 0
+    END AS surgdx
+  FROM apachepredvar
+),
 demographics AS (
   SELECT 
     p.patientUnitStayID, 
@@ -87,10 +104,20 @@ demographics AS (
     h.teachingstatus,
     h.numbedscategory,
     apache.apache_group
+ -- add admission diagnosis and comorbidities for dem table
+    apachedx.admitdiagnosis,
+    apachedx.aids,
+    apachedx.hepaticfailure,
+    apachedx.lymphoma,
+    apachedx.metastaticcancer,
+    apachedx.leukemia,
+    apachedx.cirrhosis,
+    apachedx.surgdx
   FROM patient p
   LEFT JOIN hospital h ON p.hospitalid = h.hospitalid
   LEFT JOIN vanco.weight w ON w.patientunitstayid = p.patientUnitStayID 
   LEFT JOIN apache ON p.patientUnitStayID = apache.patientUnitStayID
+  LEFT JOIN apachedx ON p.patientUnitStayID = apachedx.patientUnitStayID
   ORDER BY p.patientUnitStayID  
 )
 -- categorize BMI values into categories
