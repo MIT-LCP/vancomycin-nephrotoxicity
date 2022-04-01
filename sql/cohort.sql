@@ -91,6 +91,13 @@ valid_stay AS
     WHERE chartoffset >= (48*60)
     AND chartoffset <= (168*60)
 )
+-- must have BMI calculated for propensity score matching 
+, bmi AS (
+    SELECT DISTINCT patientunitstayid
+    FROM vanco.demographics
+    WHERE BMI IS NOT NULL
+)
+
 SELECT
   pt.patientunitstayid
   , CASE
@@ -110,6 +117,7 @@ SELECT
   , CASE WHEN dt.dialysis = 1 THEN 1 ELSE 0 END AS exclude_dialysis_on_admission
   , CASE WHEN cr0.patientunitstayid IS NULL THEN 1 ELSE 0 END AS exclude_cr_missing_baseline
   , CASE WHEN cr7.patientunitstayid IS NULL THEN 1 ELSE 0 END AS exclude_cr_missing_followup
+  , CASE WHEN bmi.patientunitstayid IS NULL THEN 1 ELSE 0 END AS exclude_missing_bmi
 FROM patient pt
 LEFT JOIN vanco.dialysis dt
   ON pt.patientunitstayid = dt.patientunitstayid
